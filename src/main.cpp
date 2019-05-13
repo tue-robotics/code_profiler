@@ -1,7 +1,7 @@
 #define PROFILEAPP
 #include "profiling/Timer.h"
 #include "profiling/Profiler.h"
-
+#include <iostream>
 
 Timer t;
 int testProf()
@@ -16,7 +16,7 @@ int testProf()
     ThreadProfiler::Start("Bla");
     ThreadProfiler::Stop("Bla");
     t.stop();
-    std::cout << "Elapsed: " << t.getElapsedTimeInMilliSec() << std::cout;
+    std::cout << "Elapsed: " << t.getElapsedTimeInMilliSec() << std::endl;
     return 0;
 }
 
