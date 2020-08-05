@@ -16,7 +16,7 @@ catkin_package(
 	INCLUDE_DIRS include
 	LIBRARIES codeprofiler
 	CATKIN_DEPENDS roscpp message_runtime
-	DEPENDS Boost
+    #	DEPENDS Boost
 )
 
 include_directories(include ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
