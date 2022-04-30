@@ -1,5 +1,5 @@
-#ifndef TUE_LOOP_TIMER_H_DEF
-#define TUE_LOOP_TIMER_H_DEF
+#ifndef TUE_PROFILING_LOOP_TIMER_H_
+#define TUE_PROFILING_LOOP_TIMER_H_
 
 
 #include <iostream>
@@ -29,4 +29,4 @@ public:
 
 }
 
-#endif // TUE_LOOP_TIMER_H_DEF
+#endif // TUE_PROFILING_LOOP_TIMER_H_
