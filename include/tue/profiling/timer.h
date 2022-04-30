@@ -37,6 +37,12 @@ public:
     void stop();
 
     /**
+     * @brief Get running status of the timer
+     * @return running or not running
+     */
+    inline bool running() const { return running_; }
+
+    /**
      * @brief Alias of Timer::getElapsedTimeInSec
      * @return elapsed time in seconds
      */
