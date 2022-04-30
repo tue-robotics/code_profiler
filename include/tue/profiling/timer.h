@@ -63,10 +63,6 @@ public:
     void   printLastElapsedTime(std::string);
     void   printLastElapsedTimeMSec(std::string);
 
-
-protected:
-
-
 private:
     /**
      * @brief Running flag
