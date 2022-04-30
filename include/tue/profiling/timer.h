@@ -12,8 +12,8 @@
 // Copyright (c) 2003 Song Ho Ahn
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef TIMER_H_DEF
-#define TIMER_H_DEF
+#ifndef TUE_PROFILING_TIMER_H_
+#define TUE_PROFILING_TIMER_H_
 
 #ifdef WIN32   // Windows system specific
 #include <windows.h>
@@ -64,4 +64,4 @@ private:
 #define TIMER_STOP(x) (t. printLastElapsedTime(x))
 #define TIMER_STOP_M(x) (t.printLastElapsedTimeMSec(x))
 
-#endif // TIMER_H_DEF
+#endif // TUE_PROFILING_TIMER_H_
