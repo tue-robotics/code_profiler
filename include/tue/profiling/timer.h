@@ -68,7 +68,11 @@ protected:
 
 
 private:
-    int    stopped;                             // stop flag 
+    /**
+     * @brief Running flag
+     */
+    bool running_;
+
 #ifdef WIN32
     /**
      * @brief ticks per second

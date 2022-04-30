@@ -21,7 +21,7 @@ namespace tue
 ///////////////////////////////////////////////////////////////////////////////
 // constructor
 ///////////////////////////////////////////////////////////////////////////////
-Timer::Timer()
+Timer::Timer() : running_(false)
 {
 #ifdef WIN32
     QueryPerformanceFrequency(&frequency);
@@ -31,8 +31,6 @@ Timer::Timer()
     start_count_.tv_sec = start_count_.tv_usec = 0;
     end_count_.tv_sec = end_count_.tv_usec = 0;
 #endif
-
-    stopped = 0;
 }
 
 
@@ -52,7 +50,7 @@ Timer::~Timer()
 ///////////////////////////////////////////////////////////////////////////////
 void Timer::start()
 {
-    stopped = 0; // reset stop flag
+    running_ = true;
 #ifdef WIN32
     QueryPerformanceCounter(&startCount);
 #else
@@ -68,7 +66,7 @@ void Timer::start()
 ///////////////////////////////////////////////////////////////////////////////
 void Timer::stop()
 {
-    stopped = 1; // set timer stopped flag
+    running_ = false;
 
 #ifdef WIN32
     QueryPerformanceCounter(&endCount);
@@ -93,7 +91,7 @@ double Timer::getElapsedTimeInMicroSec() const
     double endTimeInMicroSec = endCount.QuadPart * (1000000.0 / frequency.QuadPart);
 #else
     timeval end_count;
-    if (stopped) {
+    if (!running_) {
         end_count = end_count_;
     } else {
         gettimeofday(&end_count, NULL);
