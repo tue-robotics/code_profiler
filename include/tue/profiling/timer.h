@@ -33,8 +33,8 @@ public:
     Timer();
     ~Timer();
 
-    void   start();
-    void   stop();
+    void start();
+    void stop();
 
     /**
      * @brief Alias of Timer::getElapsedTimeInSec
@@ -60,8 +60,9 @@ public:
      */
     double getElapsedTimeInMicroSec() const;
 
-    void   printLastElapsedTime(std::string);
-    void   printLastElapsedTimeMSec(std::string);
+    void printLastElapsedTime(std::string);
+    void printLastElapsedTimeMSec(std::string);
+
 
 private:
     /**
