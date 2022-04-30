@@ -30,15 +30,36 @@ namespace tue
 class Timer
 {
 public:
-    Timer();                                    // default constructor
-    ~Timer();                                   // default destructor
+    Timer();
+    ~Timer();
 
-    void   start();                             // start timer
-    void   stop();                              // stop the timer
-    double getElapsedTime() const;                    // get elapsed time in second
-    double getElapsedTimeInSec() const;               // get elapsed time in second (same as getElapsedTime)
-    double getElapsedTimeInMilliSec() const;          // get elapsed time in milli-second
-    double getElapsedTimeInMicroSec() const;    // get elapsed time in micro-second
+    void   start();
+    void   stop();
+
+    /**
+     * @brief Alias of Timer::getElapsedTimeInSec
+     * @return elapsed time in seconds
+     */
+    double getElapsedTime() const;
+
+    /**
+     * @brief Get elasped time in seconds
+     * @return elapsed time in seconds
+     */
+    double getElapsedTimeInSec() const;
+
+    /**
+     * @brief Get elasped time in milli-seconds
+     * @return elapsed time in milli-seconds
+     */
+    double getElapsedTimeInMilliSec() const;
+
+    /**
+     * @brief Get elasped time in micro-seconds
+     * @return elapsed time in micro-seconds
+     */
+    double getElapsedTimeInMicroSec() const;
+
     void   printLastElapsedTime(std::string);
     void   printLastElapsedTimeMSec(std::string);
 
@@ -49,12 +70,30 @@ protected:
 private:
     int    stopped;                             // stop flag 
 #ifdef WIN32
-    LARGE_INTEGER frequency;                    // ticks per second
-    LARGE_INTEGER startCount;                   //
-    LARGE_INTEGER endCount;                     //
+    /**
+     * @brief ticks per second
+     */
+    LARGE_INTEGER frequency;
+
+    /**
+     * @brief startCount
+     */
+    LARGE_INTEGER startCount;
+
+    /**
+     * @brief endCount
+     */
+    LARGE_INTEGER endCount;
 #else
-    timeval start_count_;                         //
-    timeval end_count_;                           //
+    /**
+     * @brief Start counter
+     */
+    timeval start_count_;
+
+    /**
+     * @brief End counter
+     */
+    timeval end_count_;
 #endif
 };
 
