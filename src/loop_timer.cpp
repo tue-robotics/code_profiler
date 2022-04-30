@@ -4,24 +4,19 @@
 namespace tue
 {
 
-LoopTimer::LoopTimer():
-    counts_(0),
-    sum_(0.0),
-    c_(0.0),
-    running_(false)
-{}
+LoopTimer::LoopTimer(): counts_(0), sum_(0.0), c_(0.0)
+{
+}
 
 void LoopTimer::start()
 {
     ++counts_;
-    running_ = true;
     timer_.start();
 }
 
 void LoopTimer::stop()
 {
     timer_.stop();
-    running_ = false;
     long double time = timer_.getElapsedTime();
     long double y = time - c_;
     long double x = sum_ + y;
@@ -32,7 +27,6 @@ void LoopTimer::stop()
 void LoopTimer::reset()
 {
     timer_.stop();
-    running_ = false;
     counts_ = 0;
     sum_ = 0.0;
     c_ = 0.0;
@@ -40,7 +34,7 @@ void LoopTimer::reset()
 
 double LoopTimer::getTotalTime()
 {
-    if ( running_ )
+    if (timer_.running())
         this->stop();
 
     return sum_;
@@ -48,7 +42,7 @@ double LoopTimer::getTotalTime()
 
 double LoopTimer::getAverageTime()
 {
-    if ( running_ )
+    if (timer_.running())
         this->stop();
 
     return sum_/counts_;

@@ -10,14 +10,25 @@ namespace tue
 
 class LoopTimer
 {
-    tue::Timer timer_;              // Timer doing the work
-    long unsigned int counts_;      // Loop counter
-    long double sum_;               // Sum so far
-    long double c_;                 // Compensation for lost low-order bits
-    bool running_;                  // Indicates that timer is running
+private:
+    tue::Timer timer_;
+
+    /**
+     * @brief loop counter
+     */
+    long unsigned int counts_;
+    /**
+     * @brief Sum so far
+     */
+    long double sum_;
+    /**
+     * @brief Compensation for lost low-order bits
+     */
+    long double c_;
 
 public:
     LoopTimer();
+    ~LoopTimer() = default;
 
     void start();
     void stop();
