@@ -36,7 +36,7 @@ public:
 
     void printResults()
     {
-        std::cout << "Total times (using Kahan summation) over " << n_*n_ << " loops: "
+        std::cout << "Total times using Kahan summation over " << n_*n_ << " loops: "
                   << "\n\ttimer1: " << lt1_.getTotalTime()*1e3 << " ms"
                   << "\n\ttimer2: " << lt2_.getTotalTime()*1e3 << " ms"
                   << "\n\ttimer3: " << lt3_.getTotalTime()*1e3 << " ms"
@@ -44,7 +44,7 @@ public:
 
         std::cout << "tue::timer total time: " << tot_*1e3 << " ms (without numerical error compensation)\n" << std::endl;
 
-        std::cout << "Average times using Kahan summation: over " << n_*n_ << " loops: "
+        std::cout << "Average times using Kahan summation over " << n_*n_ << " loops: "
                   << "\n\ttimer1: " << lt1_.getAverageTime()*1e3 << " ms"
                   << "\n\ttimer2: " << lt2_.getAverageTime()*1e3 << " ms"
                   << "\n\ttimer3: " << lt3_.getAverageTime()*1e3 << " ms"
