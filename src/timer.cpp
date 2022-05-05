@@ -55,14 +55,14 @@ void Timer::stop()
 #endif
 }
 
-double Timer::getElapsedTimeInMicroSec() const
+long double Timer::getElapsedTimeInMicroSec() const
 {
 #ifdef WIN32
     if(!stopped)
         QueryPerformanceCounter(&endCount);
 
-    double startTimeInMicroSec = startCount.QuadPart * (1000000.0 / frequency.QuadPart);
-    double endTimeInMicroSec = endCount.QuadPart * (1000000.0 / frequency.QuadPart);
+    long double startTimeInMicroSec = startCount.QuadPart * (1000000.0 / frequency.QuadPart);
+    long double endTimeInMicroSec = endCount.QuadPart * (1000000.0 / frequency.QuadPart);
 #else
     timeval end_count;
     if (!running_) {
@@ -71,24 +71,24 @@ double Timer::getElapsedTimeInMicroSec() const
         gettimeofday(&end_count, NULL);
     }
 
-    double startTimeInMicroSec = (start_count_.tv_sec * 1000000.0) + start_count_.tv_usec;
-    double endTimeInMicroSec = (end_count.tv_sec * 1000000.0) + end_count.tv_usec;
+    long double startTimeInMicroSec = (start_count_.tv_sec * 1000000.0) + start_count_.tv_usec;
+    long double endTimeInMicroSec = (end_count.tv_sec * 1000000.0) + end_count.tv_usec;
 #endif
 
     return endTimeInMicroSec - startTimeInMicroSec;
 }
 
-double Timer::getElapsedTimeInMilliSec() const
+long double Timer::getElapsedTimeInMilliSec() const
 {
     return this->getElapsedTimeInMicroSec() * 0.001;
 }
 
-double Timer::getElapsedTimeInSec() const
+long double Timer::getElapsedTimeInSec() const
 {
     return this->getElapsedTimeInMicroSec() * 0.000001;
 }
 
-double Timer::getElapsedTime() const
+long double Timer::getElapsedTime() const
 {
     return this->getElapsedTimeInSec();
 }

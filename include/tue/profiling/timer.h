@@ -46,25 +46,25 @@ public:
      * @brief Alias of Timer::getElapsedTimeInSec
      * @return elapsed time in seconds
      */
-    double getElapsedTime() const;
+    long double getElapsedTime() const;
 
     /**
      * @brief Get elasped time in seconds
      * @return elapsed time in seconds
      */
-    double getElapsedTimeInSec() const;
+    long double getElapsedTimeInSec() const;
 
     /**
      * @brief Get elasped time in milli-seconds
      * @return elapsed time in milli-seconds
      */
-    double getElapsedTimeInMilliSec() const;
+    long double getElapsedTimeInMilliSec() const;
 
     /**
      * @brief Get elasped time in micro-seconds
      * @return elapsed time in micro-seconds
      */
-    double getElapsedTimeInMicroSec() const;
+    long double getElapsedTimeInMicroSec() const;
 
     void printLastElapsedTime(std::string);
     void printLastElapsedTimeMSec(std::string);
