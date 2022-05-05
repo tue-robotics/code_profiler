@@ -45,19 +45,28 @@ public:
      * @brief Get total number of loop iterations. When running, the current iteration is included.
      * @return Number of loop iterations
      */
-    inline long unsigned int getIterationCount(){ return counts_; }
+    inline long unsigned int getIterationCount() const { return counts_; }
 
     /**
      * @brief Get total elapsed time during the loops
      * @return Elapsed time in seconds
      */
+    ///@{
     long double getTotalLoopTime();
+    /// const version which raises a runtime_error in case the timer is running
+    long double getTotalLoopTime() const;
+    ///@}
+
 
     /**
      * @brief Get average time per loop iteration
      * @return Average time per loop iteration in seconds
      */
+    ///@{
     long double getAverageLoopTime();
+    /// const version which raises a runtime_error in case the timer is running
+    long double getAverageLoopTime() const;
+    ///@}
 
     /**
      * @brief Get the total elapsed time since the first start
@@ -69,7 +78,11 @@ public:
      * @brief Get average percentage of total time used by the loop
      * @return Percentage in range [0-1]
      */
+    ///@{
     double getLoopUsagePercentage();
+    /// const version which raises a runtime_error in case the timer is running
+    double getLoopUsagePercentage() const;
+    ///@}
 };
 
 }

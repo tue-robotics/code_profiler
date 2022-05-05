@@ -1,5 +1,7 @@
 #include "tue/profiling/loop_timer.h"
+
 #include <stdlib.h>
+#include <exception>
 
 namespace tue
 {
@@ -43,6 +45,14 @@ long double LoopTimer::getTotalLoopTime()
     return sum_;
 }
 
+long double LoopTimer::getTotalLoopTime() const
+{
+    if (timer_.running())
+        throw std::runtime_error("Call to const function getTotalLoopTime, while running");
+
+    return sum_;
+}
+
 long double LoopTimer::getAverageLoopTime()
 {
     if (timer_.running())
@@ -51,12 +61,26 @@ long double LoopTimer::getAverageLoopTime()
     return sum_/counts_;
 }
 
+long double LoopTimer::getAverageLoopTime() const
+{
+    if (timer_.running())
+        throw std::runtime_error("Call to const function getAverageLoopTime, while running");
+
+    return sum_/counts_;
+}
+
+
 long double LoopTimer::getTotalTime() const
 {
     return total_timer_.getElapsedTime();
 }
 
 double LoopTimer::getLoopUsagePercentage()
+{
+    return getTotalLoopTime()/getTotalTime();
+}
+
+double LoopTimer::getLoopUsagePercentage() const
 {
     return getTotalLoopTime()/getTotalTime();
 }
