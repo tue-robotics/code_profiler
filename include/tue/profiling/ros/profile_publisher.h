@@ -1,5 +1,5 @@
-#ifndef TUE_CODE_PROFILER_PROFILING_ROS_PROFILE_PUBLISHER_H_
-#define TUE_CODE_PROFILER_PROFILING_ROS_PROFILE_PUBLISHER_H_
+#ifndef TUE_PROFILING_ROS_PROFILE_PUBLISHER_H_
+#define TUE_PROFILING_ROS_PROFILE_PUBLISHER_H_
 
 #include <ros/publisher.h>
 
@@ -14,13 +14,21 @@ public:
 
     ProfilePublisher();
 
-    virtual ~ProfilePublisher();
+    ProfilePublisher(const Profiler& profiler);
+
+    ProfilePublisher(const Profiler* profiler);
+
+    virtual ~ProfilePublisher() = default;
 
     void initialize(const Profiler& profiler);
+
+    void initialize(const Profiler* profiler);
 
     void publish() const;
 
 protected:
+
+    void initialize();
 
     const Profiler* profiler_;
 

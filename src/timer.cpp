@@ -18,10 +18,7 @@
 namespace tue
 {
 
-///////////////////////////////////////////////////////////////////////////////
-// constructor
-///////////////////////////////////////////////////////////////////////////////
-Timer::Timer()
+Timer::Timer() : running_(false)
 {
 #ifdef WIN32
     QueryPerformanceFrequency(&frequency);
@@ -31,28 +28,15 @@ Timer::Timer()
     start_count_.tv_sec = start_count_.tv_usec = 0;
     end_count_.tv_sec = end_count_.tv_usec = 0;
 #endif
-
-    stopped = 0;
 }
 
-
-
-///////////////////////////////////////////////////////////////////////////////
-// distructor
-///////////////////////////////////////////////////////////////////////////////
 Timer::~Timer()
 {
 }
 
-
-
-///////////////////////////////////////////////////////////////////////////////
-// start timer.
-// startCount will be set at this point.
-///////////////////////////////////////////////////////////////////////////////
 void Timer::start()
 {
-    stopped = 0; // reset stop flag
+    running_ = true;
 #ifdef WIN32
     QueryPerformanceCounter(&startCount);
 #else
@@ -60,15 +44,9 @@ void Timer::start()
 #endif
 }
 
-
-
-///////////////////////////////////////////////////////////////////////////////
-// stop the timer.
-// endCount will be set at this point.
-///////////////////////////////////////////////////////////////////////////////
 void Timer::stop()
 {
-    stopped = 1; // set timer stopped flag
+    running_ = false;
 
 #ifdef WIN32
     QueryPerformanceCounter(&endCount);
@@ -77,61 +55,40 @@ void Timer::stop()
 #endif
 }
 
-
-
-///////////////////////////////////////////////////////////////////////////////
-// compute elapsed time in micro-second resolution.
-// other getElapsedTime will call this first, then convert to correspond resolution.
-///////////////////////////////////////////////////////////////////////////////
-double Timer::getElapsedTimeInMicroSec() const
+long double Timer::getElapsedTimeInMicroSec() const
 {
 #ifdef WIN32
     if(!stopped)
         QueryPerformanceCounter(&endCount);
 
-    double startTimeInMicroSec = startCount.QuadPart * (1000000.0 / frequency.QuadPart);
-    double endTimeInMicroSec = endCount.QuadPart * (1000000.0 / frequency.QuadPart);
+    long double startTimeInMicroSec = startCount.QuadPart * (1000000.0 / frequency.QuadPart);
+    long double endTimeInMicroSec = endCount.QuadPart * (1000000.0 / frequency.QuadPart);
 #else
     timeval end_count;
-    if (stopped) {
+    if (!running_) {
         end_count = end_count_;
     } else {
         gettimeofday(&end_count, NULL);
     }
 
-    double startTimeInMicroSec = (start_count_.tv_sec * 1000000.0) + start_count_.tv_usec;
-    double endTimeInMicroSec = (end_count.tv_sec * 1000000.0) + end_count.tv_usec;
+    long double startTimeInMicroSec = (start_count_.tv_sec * 1000000.0) + start_count_.tv_usec;
+    long double endTimeInMicroSec = (end_count.tv_sec * 1000000.0) + end_count.tv_usec;
 #endif
 
     return endTimeInMicroSec - startTimeInMicroSec;
 }
 
-
-
-///////////////////////////////////////////////////////////////////////////////
-// divide elapsedTimeInMicroSec by 1000
-///////////////////////////////////////////////////////////////////////////////
-double Timer::getElapsedTimeInMilliSec() const
+long double Timer::getElapsedTimeInMilliSec() const
 {
     return this->getElapsedTimeInMicroSec() * 0.001;
 }
 
-
-
-///////////////////////////////////////////////////////////////////////////////
-// divide elapsedTimeInMicroSec by 1000000
-///////////////////////////////////////////////////////////////////////////////
-double Timer::getElapsedTimeInSec() const
+long double Timer::getElapsedTimeInSec() const
 {
     return this->getElapsedTimeInMicroSec() * 0.000001;
 }
 
-
-
-///////////////////////////////////////////////////////////////////////////////
-// same as getElapsedTimeInSec()
-///////////////////////////////////////////////////////////////////////////////
-double Timer::getElapsedTime() const
+long double Timer::getElapsedTime() const
 {
     return this->getElapsedTimeInSec();
 }
