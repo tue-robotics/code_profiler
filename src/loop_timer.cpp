@@ -11,6 +11,8 @@ LoopTimer::LoopTimer(): counts_(0), sum_(0.0), c_(0.0)
 void LoopTimer::start()
 {
     ++counts_;
+    if (!total_timer_.running())
+        total_timer_.start();
     timer_.start();
 }
 
@@ -47,6 +49,11 @@ long double LoopTimer::getAverageTime()
         this->stop();
 
     return sum_/counts_;
+}
+
+double LoopTimer::getLoopUsagePercentage()
+{
+    return getTotalTime()/total_timer_.getElapsedTime();
 }
 
 }

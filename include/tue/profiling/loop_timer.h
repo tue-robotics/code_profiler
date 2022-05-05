@@ -12,6 +12,7 @@ class LoopTimer
 {
 private:
     tue::Timer timer_;
+    tue::Timer total_timer_;
 
     /**
      * @brief loop counter
@@ -51,6 +52,12 @@ public:
      * @return Average time per loop iteration in seconds
      */
     long double getAverageTime();
+
+    /**
+     * @brief Get average percentage of total time used by the loop
+     * @return Percentage in range [0-1]
+     */
+    double getLoopUsagePercentage();
 };
 
 }
