@@ -11,7 +11,7 @@ namespace tue
 
 // ----------------------------------------------------------------------------------------------------
 
-ProfilePublisher::ProfilePublisher() : profiler_(0)
+ProfilePublisher::ProfilePublisher() : profiler_(nullptr)
 {
 }
 

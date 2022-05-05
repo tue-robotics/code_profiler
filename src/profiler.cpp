@@ -7,19 +7,19 @@ namespace tue
 
 // ----------------------------------------------------------------------------------------------------
 
-Profiler::Profiler() : head_(0), parent_(0)
+Profiler::Profiler() : head_(nullptr), parent_(nullptr)
 {
 }
 
 // ----------------------------------------------------------------------------------------------------
 
-Profiler::Profiler(const std::string& name) : name_(name), head_(0), parent_(0)
+Profiler::Profiler(const std::string& name) : name_(name), head_(nullptr), parent_(nullptr)
 {
 }
 
 // ----------------------------------------------------------------------------------------------------
 
-Profiler::Profiler(const std::string& name, Profiler* parent) : name_(name), head_(0), parent_(parent)
+Profiler::Profiler(const std::string& name, Profiler* parent) : name_(name), head_(nullptr), parent_(parent)
 {
 }
 
