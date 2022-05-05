@@ -35,7 +35,7 @@ void LoopTimer::reset()
     c_ = 0.0;
 }
 
-long double LoopTimer::getTotalTime()
+long double LoopTimer::getTotalLoopTime()
 {
     if (timer_.running())
         this->stop();
@@ -43,7 +43,7 @@ long double LoopTimer::getTotalTime()
     return sum_;
 }
 
-long double LoopTimer::getAverageTime()
+long double LoopTimer::getAverageLoopTime()
 {
     if (timer_.running())
         this->stop();
@@ -53,7 +53,7 @@ long double LoopTimer::getAverageTime()
 
 double LoopTimer::getLoopUsagePercentage()
 {
-    return getTotalTime()/total_timer_.getElapsedTime();
+    return getTotalLoopTime()/total_timer_.getElapsedTime();
 }
 
 }

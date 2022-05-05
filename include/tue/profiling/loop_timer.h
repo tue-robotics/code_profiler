@@ -45,13 +45,13 @@ public:
      * @brief Get total elapsed time during the loops
      * @return Elapsed time in seconds
      */
-    long double getTotalTime();
+    long double getTotalLoopTime();
 
     /**
      * @brief Get average time per loop iteration
      * @return Average time per loop iteration in seconds
      */
-    long double getAverageTime();
+    long double getAverageLoopTime();
 
     /**
      * @brief Get average percentage of total time used by the loop
