@@ -14,13 +14,21 @@ public:
 
     ProfilePublisher();
 
+    ProfilePublisher(const Profiler& profiler);
+
+    ProfilePublisher(const Profiler* profiler);
+
     virtual ~ProfilePublisher();
 
     void initialize(const Profiler& profiler);
 
+    void initialize(const Profiler* profiler);
+
     void publish() const;
 
 protected:
+
+    void initialize();
 
     const Profiler* profiler_;
 

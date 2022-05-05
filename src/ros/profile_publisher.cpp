@@ -17,6 +17,20 @@ ProfilePublisher::ProfilePublisher() : profiler_(nullptr)
 
 // ----------------------------------------------------------------------------------------------------
 
+ProfilePublisher::ProfilePublisher(const Profiler& profiler) : profiler_(&profiler)
+{
+    initialize();
+}
+
+// ----------------------------------------------------------------------------------------------------
+
+ProfilePublisher::ProfilePublisher(const Profiler* profiler) : profiler_(profiler)
+{
+    initialize();
+}
+
+// ----------------------------------------------------------------------------------------------------
+
 ProfilePublisher::~ProfilePublisher()
 {
 }
@@ -26,6 +40,22 @@ ProfilePublisher::~ProfilePublisher()
 void ProfilePublisher::initialize(const Profiler& profiler)
 {
     profiler_ = &profiler;
+    initialize();
+}
+
+// ----------------------------------------------------------------------------------------------------
+
+void ProfilePublisher::initialize(const Profiler* profiler)
+{
+    profiler_ = profiler;
+    initialize();
+}
+
+// ----------------------------------------------------------------------------------------------------
+
+void ProfilePublisher::initialize()
+{
+    assert(("Profiler is a nullptr", profiler_));
     ros::NodeHandle nh("~");
     pub_stats_ = nh.advertise<std_msgs::String>("profile/" + profiler_->getName(), 1);
 }
