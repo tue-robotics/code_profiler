@@ -32,6 +32,10 @@ public:
 
     void start();
     void stop();
+
+    /**
+     * @brief Stop the timer and reset all counters to zero
+     */
     void reset();
 
     /**
