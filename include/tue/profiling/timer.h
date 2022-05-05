@@ -69,6 +69,24 @@ public:
     void printLastElapsedTime(std::string);
     void printLastElapsedTimeMSec(std::string);
 
+    /**
+     * @brief Get the current time in micro-seconds since epoch
+     * @return Epoch time in micro-seconds
+     */
+    static long double nowMicroSec();
+
+    /**
+     * @brief Get the current time in milli-seconds since epoch
+     * @return Epoch time in milli-seconds
+     */
+    static long double nowMilliSec();
+
+    /**
+     * @brief Get the current time in seconds since epoch
+     * @return Epoch time in seconds
+     */
+    static long double now();
+
 
 private:
     /**

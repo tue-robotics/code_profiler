@@ -120,5 +120,28 @@ void Timer::printLastElapsedTimeMSec(std::string m)
 	std::cout << m << " (msec): " << getElapsedTimeInMilliSec() << std::endl;
 }
 
+long double Timer::nowMicroSec()
+{
+#ifdef WIN32
+    LARGE_INTEGER nowCount;
+    QueryPerformanceCounter(&nowCount);
+    return timeCountsToLongDouble(nowCount);
+#else
+    timeval now_count;
+    gettimeofday(&now_count, NULL);
+    return timevalToLongDouble(now_count);
+#endif
+}
+
+long double Timer::nowMilliSec()
+{
+    return Timer::nowMicroSec() * 0.001;
+}
+
+long double Timer::now()
+{
+return Timer::nowMicroSec() * 0.000001;
+}
+
 }
 
