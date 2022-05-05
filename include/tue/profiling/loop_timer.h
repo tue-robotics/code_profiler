@@ -17,10 +17,12 @@ private:
      * @brief loop counter
      */
     long unsigned int counts_;
+
     /**
      * @brief Sum so far
      */
     long double sum_;
+
     /**
      * @brief Compensation for lost low-order bits
      */
