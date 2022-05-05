@@ -18,12 +18,26 @@
 namespace tue
 {
 
+#ifdef WIN32
+inline long double timeCountsToLongDouble(const LARGE_INTEGER& counts, const LARGE_INTEGER& frequency)
+{
+    return counts.QuadPart * (1000000.0 / frequency.QuadPart);
+}
+#else
+inline long double timevalToLongDouble(const timeval& time)
+{
+    return (time.tv_sec * 1000000.0) + time.tv_usec;
+}
+#endif
+
+// ----------------------------------------------------------------------------------------------------
+
 Timer::Timer() : running_(false)
 {
 #ifdef WIN32
-    QueryPerformanceFrequency(&frequency);
-    startCount.QuadPart = 0;
-    endCount.QuadPart = 0;
+    QueryPerformanceFrequency(&frequency_);
+    startCount_.QuadPart = 0;
+    endCount_.QuadPart = 0;
 #else
     start_count_.tv_sec = start_count_.tv_usec = 0;
     end_count_.tv_sec = end_count_.tv_usec = 0;
@@ -38,7 +52,7 @@ void Timer::start()
 {
     running_ = true;
 #ifdef WIN32
-    QueryPerformanceCounter(&startCount);
+    QueryPerformanceCounter(&startCount_);
 #else
     gettimeofday(&start_count_, NULL);
 #endif
@@ -49,7 +63,7 @@ void Timer::stop()
     running_ = false;
 
 #ifdef WIN32
-    QueryPerformanceCounter(&endCount);
+    QueryPerformanceCounter(&endCount_);
 #else
     gettimeofday(&end_count_, NULL);
 #endif
@@ -58,21 +72,23 @@ void Timer::stop()
 long double Timer::getElapsedTimeInMicroSec() const
 {
 #ifdef WIN32
-    if(!stopped)
+    LARGE_INTEGER endCount;
+    if(!running_)
+        endCount = endCount_;
+    else
         QueryPerformanceCounter(&endCount);
 
-    long double startTimeInMicroSec = startCount.QuadPart * (1000000.0 / frequency.QuadPart);
-    long double endTimeInMicroSec = endCount.QuadPart * (1000000.0 / frequency.QuadPart);
+    long double startTimeInMicroSec = timeCountsToLongDouble(startCount_, frequency_);
+    long double endTimeInMicroSec = timeCountsToLongDouble(endCount, frequency_);
 #else
     timeval end_count;
-    if (!running_) {
+    if (!running_)
         end_count = end_count_;
-    } else {
+    else
         gettimeofday(&end_count, NULL);
-    }
 
-    long double startTimeInMicroSec = (start_count_.tv_sec * 1000000.0) + start_count_.tv_usec;
-    long double endTimeInMicroSec = (end_count.tv_sec * 1000000.0) + end_count.tv_usec;
+    long double startTimeInMicroSec = timevalToLongDouble(start_count_);
+    long double endTimeInMicroSec = timevalToLongDouble(end_count);
 #endif
 
     return endTimeInMicroSec - startTimeInMicroSec;

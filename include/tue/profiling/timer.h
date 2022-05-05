@@ -80,17 +80,17 @@ private:
     /**
      * @brief ticks per second
      */
-    LARGE_INTEGER frequency;
+    LARGE_INTEGER frequency_;
 
     /**
      * @brief startCount
      */
-    LARGE_INTEGER startCount;
+    LARGE_INTEGER startCount_;
 
     /**
      * @brief endCount
      */
-    LARGE_INTEGER endCount;
+    LARGE_INTEGER endCount_;
 #else
     /**
      * @brief Start counter
