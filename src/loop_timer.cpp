@@ -48,7 +48,7 @@ long double LoopTimer::getTotalLoopTime()
 long double LoopTimer::getTotalLoopTime() const
 {
     if (timer_.running())
-        throw std::runtime_error("Call to const function getTotalLoopTime, while running");
+        return sum_;
 
     return sum_;
 }
@@ -64,7 +64,7 @@ long double LoopTimer::getAverageLoopTime()
 long double LoopTimer::getAverageLoopTime() const
 {
     if (timer_.running())
-        throw std::runtime_error("Call to const function getAverageLoopTime, while running");
+        return sum_/std::max<int>(counts_ - 1, 1);
 
     return sum_/counts_;
 }

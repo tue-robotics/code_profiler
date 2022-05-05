@@ -48,28 +48,28 @@ public:
     inline long unsigned int getIterationCount() const { return counts_; }
 
     /**
-     * @brief Get total elapsed time during the loops
+     * @brief Get total elapsed time during the loops. Stops the current iteration when running.
      * @return Elapsed time in seconds
      */
     ///@{
     long double getTotalLoopTime();
-    /// const version which raises a runtime_error in case the timer is running
+    /// const version which excludes the current loop iteration when running
     long double getTotalLoopTime() const;
     ///@}
 
 
     /**
-     * @brief Get average time per loop iteration
+     * @brief Get average time per loop iteration. Stops the current iteration when running.
      * @return Average time per loop iteration in seconds
      */
     ///@{
     long double getAverageLoopTime();
-    /// const version which raises a runtime_error in case the timer is running
+    /// const version which excludes the current loop iteration when running
     long double getAverageLoopTime() const;
     ///@}
 
     /**
-     * @brief Get the total elapsed time since the first start
+     * @brief Get the total elapsed time since the first start.Stops the current iteration when running.
      * @return Total time since start in seconds
      */
     long double getTotalTime() const;
@@ -80,7 +80,7 @@ public:
      */
     ///@{
     double getLoopUsagePercentage();
-    /// const version which raises a runtime_error in case the timer is running
+    /// const version which excludes the current loop iteration when running
     double getLoopUsagePercentage() const;
     ///@}
 };
