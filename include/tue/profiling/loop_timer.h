@@ -34,8 +34,17 @@ public:
     void stop();
     void reset();
 
-    double getTotalTime();
-    double getAverageTime();
+    /**
+     * @brief Get total elapsed time during the loops
+     * @return Elapsed time in seconds
+     */
+    long double getTotalTime();
+
+    /**
+     * @brief Get average time per loop iteration
+     * @return Average time per loop iteration in seconds
+     */
+    long double getAverageTime();
 };
 
 }

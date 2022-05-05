@@ -26,13 +26,14 @@ void LoopTimer::stop()
 
 void LoopTimer::reset()
 {
+    total_timer_.stop();
     timer_.stop();
     counts_ = 0;
     sum_ = 0.0;
     c_ = 0.0;
 }
 
-double LoopTimer::getTotalTime()
+long double LoopTimer::getTotalTime()
 {
     if (timer_.running())
         this->stop();
@@ -40,7 +41,7 @@ double LoopTimer::getTotalTime()
     return sum_;
 }
 
-double LoopTimer::getAverageTime()
+long double LoopTimer::getAverageTime()
 {
     if (timer_.running())
         this->stop();
