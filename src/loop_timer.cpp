@@ -51,7 +51,7 @@ long double LoopTimer::getAverageLoopTime()
     return sum_/counts_;
 }
 
-long double LoopTimer::getTotalTime()
+long double LoopTimer::getTotalTime() const
 {
     return total_timer_.getElapsedTime();
 }

@@ -63,7 +63,7 @@ public:
      * @brief Get the total elapsed time since the first start
      * @return Total time since start in seconds
      */
-    long double getTotalTime();
+    long double getTotalTime() const;
 
     /**
      * @brief Get average percentage of total time used by the loop
