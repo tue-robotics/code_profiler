@@ -51,9 +51,14 @@ long double LoopTimer::getAverageLoopTime()
     return sum_/counts_;
 }
 
+long double LoopTimer::getTotalTime()
+{
+    return total_timer_.getElapsedTime();
+}
+
 double LoopTimer::getLoopUsagePercentage()
 {
-    return getTotalLoopTime()/total_timer_.getElapsedTime();
+    return getTotalLoopTime()/getTotalTime();
 }
 
 }

@@ -54,6 +54,12 @@ public:
     long double getAverageLoopTime();
 
     /**
+     * @brief Get the total elapsed time since the first start
+     * @return Total time since start in seconds
+     */
+    long double getTotalTime();
+
+    /**
      * @brief Get average percentage of total time used by the loop
      * @return Percentage in range [0-1]
      */
