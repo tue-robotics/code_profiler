@@ -42,6 +42,12 @@ public:
     void reset();
 
     /**
+     * @brief Get total number of loop iterations. When running, the current iteration is included.
+     * @return Number of loop iterations
+     */
+    inline long unsigned int getIterationCount(){ return counts_; }
+
+    /**
      * @brief Get total elapsed time during the loops
      * @return Elapsed time in seconds
      */

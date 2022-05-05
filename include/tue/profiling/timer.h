@@ -69,6 +69,24 @@ public:
     void printLastElapsedTime(std::string);
     void printLastElapsedTimeMSec(std::string);
 
+    /**
+     * @brief Get the current time in micro-seconds since epoch
+     * @return Epoch time in micro-seconds
+     */
+    static long double nowMicroSec();
+
+    /**
+     * @brief Get the current time in milli-seconds since epoch
+     * @return Epoch time in milli-seconds
+     */
+    static long double nowMilliSec();
+
+    /**
+     * @brief Get the current time in seconds since epoch
+     * @return Epoch time in seconds
+     */
+    static long double now();
+
 
 private:
     /**
@@ -80,17 +98,17 @@ private:
     /**
      * @brief ticks per second
      */
-    LARGE_INTEGER frequency;
+    LARGE_INTEGER frequency_;
 
     /**
      * @brief startCount
      */
-    LARGE_INTEGER startCount;
+    LARGE_INTEGER startCount_;
 
     /**
      * @brief endCount
      */
-    LARGE_INTEGER endCount;
+    LARGE_INTEGER endCount_;
 #else
     /**
      * @brief Start counter
