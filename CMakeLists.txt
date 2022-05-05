@@ -19,6 +19,9 @@ catkin_package(
 
 include_directories(include ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 
+# Get all the headers
+file(GLOB_RECURSE HEADER_FILES include/*.h)
+
 set(SRC_PROFILING
     src/profiling/Timer.cpp
     src/profiling/ProfileLog.cpp
@@ -28,6 +31,8 @@ set(SRC_PROFILING
     src/scoped_timer.cpp
     src/loop_timer.cpp
     src/ros/profile_publisher.cpp
+
+    ${HEADER_FILES}
 )
 
 add_library(codeprofiler ${SRC_PROFILING})
