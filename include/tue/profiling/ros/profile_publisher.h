@@ -18,7 +18,7 @@ public:
 
     ProfilePublisher(const Profiler* profiler);
 
-    virtual ~ProfilePublisher();
+    virtual ~ProfilePublisher() = default;
 
     void initialize(const Profiler& profiler);
 

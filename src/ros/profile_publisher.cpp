@@ -31,12 +31,6 @@ ProfilePublisher::ProfilePublisher(const Profiler* profiler) : profiler_(profile
 
 // ----------------------------------------------------------------------------------------------------
 
-ProfilePublisher::~ProfilePublisher()
-{
-}
-
-// ----------------------------------------------------------------------------------------------------
-
 void ProfilePublisher::initialize(const Profiler& profiler)
 {
     profiler_ = &profiler;
