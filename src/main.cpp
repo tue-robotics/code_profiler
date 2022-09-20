@@ -28,7 +28,7 @@ void testProf2()
     t2.join();
 }
 
-int main(int argc, char** argv)
+int main()
 {
     return testProf();
 }
