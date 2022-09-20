@@ -1,10 +1,8 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(code_profiler)
 
-add_compile_options(-Wall)
-add_compile_options(-Werror=all)
-add_compile_options(-Wextra)
-add_compile_options(-Werror=extra)
+add_compile_options(-Wall -Werror=all)
+add_compile_options(-Wextra -Werror=extra)
 
 find_package(catkin REQUIRED COMPONENTS message_generation roscpp std_msgs)
 find_package(Boost REQUIRED COMPONENTS thread system)
