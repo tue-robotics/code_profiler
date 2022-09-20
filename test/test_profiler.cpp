@@ -21,7 +21,8 @@ void c()
     a();
 }
 
-int main(int argc, char **argv) {
+int main()
+{
 
     profiler.setName("test");
 

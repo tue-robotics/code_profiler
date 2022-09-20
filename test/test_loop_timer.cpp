@@ -54,7 +54,8 @@ public:
     }
 };
 
-int main(int argc, char **argv) {
+int main()
+{
 
     LoopTimerTest ltt(1000);
 
