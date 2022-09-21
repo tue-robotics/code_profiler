@@ -49,7 +49,7 @@ void ProfilePublisher::initialize(const Profiler* profiler)
 
 void ProfilePublisher::initialize()
 {
-    assert(("Profiler is a nullptr", profiler_));
+    assert((void("Profiler is a nullptr"), profiler_));
     ros::NodeHandle nh("~");
     pub_stats_ = nh.advertise<std_msgs::String>("profile/" + profiler_->getName(), 1);
 }
