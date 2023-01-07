@@ -5,7 +5,7 @@
 <package format="3">
   <name>code_profiler</name>
   <version>0.0.0</version>
-  <description>The code_profiler package</description>
+  <description>Various classes to profile code in different ways. Including some additonal loop statistics.</description>
 
   <maintainer email="s.v.d.dries@tue.nl">Sjoerd van den Dries</maintainer>
 
@@ -23,6 +23,14 @@
   <build_export_depend>message_runtime</build_export_depend>
 
   <exec_depend>message_runtime</exec_depend>
-  <exec_depend condition="$ROS_PYTHON_VERSION == 2">python-numpy</exec_depend>
-  <exec_depend condition="$ROS_PYTHON_VERSION == 3">python3-numpy</exec_depend>
+  <exec_depend>python3-numpy</exec_depend>
+
+  <test_depend>catkin_lint_cmake</test_depend>
+
+  <doc_depend>doxygen</doc_depend>
+
+  <export>
+    <rosdoc config="rosdoc.yaml" />
+  </export>
+
 </package>
