@@ -23,7 +23,6 @@ void c()
 
 int main()
 {
-
     profiler.setName("test");
 
     profiler.startTimer("total");
