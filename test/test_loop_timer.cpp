@@ -4,22 +4,22 @@ class LoopTimerTest
 {
     tue::LoopTimer lt1_, lt2_, lt3_;
     tue::Timer timer_;
-    int n_;
+    uint n_;
     double tot_;
 
 public:
-    LoopTimerTest(int n): n_(n), tot_(0.0)
+    LoopTimerTest(uint n): n_(n), tot_(0.0)
     {}
 
     void run( )
     {
         lt1_.start();
 
-        for ( int i = 0; i < n_; ++i )
+        for (uint i = 0; i < n_; ++i)
         {
             lt2_.start();
 
-            for ( int j = 0; j < n_; ++j )
+            for (uint j = 0; j < n_; ++j )
             {
                 timer_.start();
                 timer_.stop();
@@ -56,7 +56,6 @@ public:
 
 int main()
 {
-
     LoopTimerTest ltt(1000);
 
     ltt.run();

@@ -1,5 +1,5 @@
-#ifndef PROFILELOG_H
-#define PROFILELOG_H
+#ifndef PROFILING_PROFILELOG_H_
+#define PROFILING_PROFILELOG_H_
 #ifdef PROFILEAPP
 #include <iostream>
 #include <vector>
@@ -15,4 +15,4 @@ public:
 };
 #endif
 
-#endif // PROFILELOG_H
+#endif // PROFILING_PROFILELOG_H_
