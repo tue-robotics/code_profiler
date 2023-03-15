@@ -8,6 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: TUe CI
-        uses: tue-robotics/tue-env/ci/main@master
+        uses: tue-robotics/tue-env/ci/main@github_container
         with:
           package: ${{ github.event.repository.name }}
