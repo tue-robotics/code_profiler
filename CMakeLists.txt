@@ -1,97 +1,80 @@
 cmake_minimum_required(VERSION 3.5)
 project(code_profiler)
 
-add_compile_options(-Wall -Werror=all)
-add_compile_options(-Wextra -Werror=extra)
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 17)
+endif()
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Werror=all)
+  add_compile_options(-Wextra -Werror=extra)
+endif()
 
-find_package(catkin REQUIRED COMPONENTS message_generation roscpp std_msgs)
-find_package(Boost REQUIRED COMPONENTS thread system)
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
 
-add_message_files(FILES
-    Statistics.msg
+# 1. Dit maakt intern al een target "code_profiler" aan!
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/Statistics.msg"
+  DEPENDENCIES std_msgs
 )
 
-generate_messages(DEPENDENCIES)
-
-catkin_package(
-    INCLUDE_DIRS include
-    LIBRARIES ${PROJECT_NAME}
-    CATKIN_DEPENDS message_runtime roscpp std_msgs
-    DEPENDS Boost
+# 2. Geef de library een unieke naam (Projectnaam + _lib)
+add_library(${PROJECT_NAME}_lib SHARED
+  src/loop_timer.cpp
+  src/profiler.cpp
+  src/profiling/ProfileLog.cpp
+  src/profiling/StatsPublisher.cpp
+  src/profiling/Timer.cpp
+  src/ros/profile_publisher.cpp
+  src/scoped_timer.cpp
+  src/timer.cpp
 )
 
-###########
-## Build ##
-###########
-
-include_directories(
-    include
-    SYSTEM
-    ${Boost_INCLUDE_DIRS}
-    ${catkin_INCLUDE_DIRS}
+# Koppel de typesupport van je eigen berichten
+rosidl_get_typesupport_target(cpp_typesupport_target ${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(${PROJECT_NAME}_lib
+  PRIVATE
+    ${cpp_typesupport_target}
+    rclcpp::rclcpp
+    std_msgs::std_msgs__rosidl_typesupport_cpp
 )
 
-# Get all the headers
-file(GLOB_RECURSE HEADER_FILES include/*.h)
-
-add_library(${PROJECT_NAME}
-    ${HEADER_FILES}
-
-    src/loop_timer.cpp
-    src/profiler.cpp
-    src/profiling/ProfileLog.cpp
-    src/profiling/StatsPublisher.cpp
-    src/profiling/Timer.cpp
-    src/ros/profile_publisher.cpp
-    src/scoped_timer.cpp
-    src/timer.cpp
+target_include_directories(${PROJECT_NAME}_lib PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
 )
-target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} ${catkin_LIBRARIES})
-set_property(TARGET ${PROJECT_NAME} PROPERTY COMPILE_DEFINITIONS "PROFILEAPP")
-add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS})
 
+# 3. Executables (Zorg dat ze ALLEMAAL zijn gedefinieerd voor de install stap)
 add_executable(profiler_test src/main.cpp)
-target_link_libraries(profiler_test ${PROJECT_NAME})
-
-add_executable(test_profiler test/test_profiler.cpp)
-target_link_libraries(test_profiler ${PROJECT_NAME})
+target_link_libraries(profiler_test ${PROJECT_NAME}_lib)
 
 add_executable(test_loop_timer test/test_loop_timer.cpp)
-target_link_libraries(test_loop_timer ${PROJECT_NAME})
+target_link_libraries(test_loop_timer ${PROJECT_NAME}_lib)
 
-#############
-## Install ##
-#############
+add_executable(test_profiler test/test_profiler.cpp)
+target_link_libraries(test_profiler ${PROJECT_NAME}_lib)
 
-install(
-  DIRECTORY include/
-  DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
+# 4. Installatie
+install(TARGETS ${PROJECT_NAME}_lib
+  EXPORT export_${PROJECT_NAME}
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
 )
 
-install(
-  TARGETS
-    ${PROJECT_NAME}
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
-)
+install(DIRECTORY include/ DESTINATION include)
 
-catkin_install_python(PROGRAMS scripts/liveprofile
-                      DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
-
-install(
-  TARGETS
+install(TARGETS
     profiler_test
     test_loop_timer
     test_profiler
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  DESTINATION lib/${PROJECT_NAME}
 )
 
-#############
-## Testing ##
-#############
+# 5. Export
+ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
+ament_export_dependencies(rclcpp std_msgs)
 
-if (CATKIN_ENABLE_TESTING)
-  find_package(catkin_lint_cmake REQUIRED)
-  catkin_add_catkin_lint_test("-W2 --ignore HEADER_OUTSIDE_PACKAGE_INCLUDE_PATH")
-endif()
+ament_package()
