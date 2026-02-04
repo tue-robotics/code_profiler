@@ -80,7 +80,7 @@ install(TARGETS
 
 # 5. Export
 ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
-ament_export_dependencies(rclcpp std_msgs)
+ament_export_dependencies(rclcpp std_msgs rosidl_default_runtime)
 
 # 6. Testing and Linting
 if(BUILD_TESTING)
