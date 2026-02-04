@@ -4,7 +4,8 @@
 #include <string>
 #include <map>
 #include <stack>
-#include <ros/publisher.h>
+#include <rclcpp/rclcpp.hpp>
+#include <code_profiler/msg/statistics.hpp>
 
 #include "profiling/Timer.h"
 
@@ -28,7 +29,7 @@ public:
 
     virtual ~StatsPublisher();
 
-    void initialize();
+    void initialize(rclcpp::Node* node);
 
     void startTimer(const std::string& label);
 
@@ -38,14 +39,13 @@ public:
 
 protected:
 
-    ros::Publisher pub_stats_;
+    rclcpp::Publisher<code_profiler::msg::Statistics>::SharedPtr pub_stats_;
 
     std::map<std::string, Timer> timers_;
 
     std::stack<ScopeStat> stack_;
 
-
-
+    rclcpp::Node* node_;
 
 };
 

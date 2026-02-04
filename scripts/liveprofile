@@ -1,14 +1,14 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
-import rospy
+import rclpy
+from rclpy.node import Node
 from code_profiler.msg import Statistics
 
 import numpy
 
-import sys
 
-class LiveProfile:
+class LiveProfile(Node):
 
     agg_length = 1  # seconds
 
@@ -16,21 +16,24 @@ class LiveProfile:
     start_agg = None
 
     def __init__(self):
-        rospy.init_node('liveprofile', anonymous=True)
-
-        self.start_agg = rospy.get_rostime()
-
-        args = rospy.myargv()
+        super().__init__('liveprofile')
+        
+        args = sys.argv
         if len(args) < 2:
-            print(f'usage: {args[0]} topicname')
+            self.get_logger().error(f'usage: {args[0]} topicname')
             sys.exit(1)
 
-        rospy.Subscriber(args[1], Statistics, self.callback)
+        self.start_agg = self.get_clock().now()
+        self.subscription = self.create_subscription(
+            Statistics,
+            args[1],
+            self.callback,
+            10)
 
     def callback(self, data):
-        now = rospy.get_rostime()
-        diff = now - self.start_agg
-        if diff.to_sec() > self.agg_length:
+        now = self.get_clock().now()
+        diff = (now - self.start_agg).nanoseconds / 1e9  # Convert to seconds
+        if diff > self.agg_length:
             self.report(self.agg)
             self.start_agg = now
             self.agg = {}
@@ -41,12 +44,15 @@ class LiveProfile:
                 self.agg[l].append(t)
 
     def report(self, data):
-        for k, v in sorted(data.iteritems()):
+        for k, v in sorted(data.items()):
             mean = "{0:.3f} ms".format(numpy.mean(v, axis=0)*1000)
             std  = "{0:.3f} ms".format(numpy.std(v, axis=0)*1000)
-            print('{k.ljust(55)}\t{mean=}\t{std=}\t({len(v)} samples)')
+            print(f'{k.ljust(55)}\tmean={mean}\tstd={std}\t({len(v)} samples)')
 
 
 if __name__ == '__main__':
+    rclpy.init()
     profiler = LiveProfile()
-    rospy.spin()
+    rclpy.spin(profiler)
+    profiler.destroy_node()
+    rclpy.shutdown()

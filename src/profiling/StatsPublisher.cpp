@@ -1,11 +1,12 @@
 #include "profiling/StatsPublisher.h"
 
-#include <ros/ros.h>
-#include <code_profiler/Statistics.h>
+#include <rclcpp/rclcpp.hpp>
+#include <code_profiler/msg/statistics.hpp>
+#include <iostream>
 
 // ----------------------------------------------------------------------------------------------------
 
-StatsPublisher::StatsPublisher()
+StatsPublisher::StatsPublisher() : node_(nullptr)
 {
 }
 
@@ -17,10 +18,16 @@ StatsPublisher::~StatsPublisher()
 
 // ----------------------------------------------------------------------------------------------------
 
-void StatsPublisher::initialize()
+void StatsPublisher::initialize(rclcpp::Node* node)
 {
-    ros::NodeHandle nh("~");
-    pub_stats_ = nh.advertise<code_profiler::Statistics>("profiler_stats", 1);
+    if (!node)
+    {
+        std::cerr << "code_profiler: StatsPublisher::initialize() - Node is a nullptr." << std::endl;
+        return;
+    }
+    
+    node_ = node;
+    pub_stats_ = node_->create_publisher<code_profiler::msg::Statistics>("profiler_stats", 1);
 }
 
 // ----------------------------------------------------------------------------------------------------
@@ -60,18 +67,18 @@ void StatsPublisher::stopTimer(const std::string& label)
 
 void StatsPublisher::publish() const
 {
-    if (pub_stats_.getTopic() == "")
+    if (!pub_stats_)
     {
-        std::cout << "code_profiler: StatsPublisher not initialzed." << std::endl;
+        std::cout << "code_profiler: StatsPublisher not initialized." << std::endl;
         return;
     }
 
-    code_profiler::Statistics msg;
+    code_profiler::msg::Statistics msg;
     for(std::map<std::string, Timer>::const_iterator it = timers_.begin(); it != timers_.end(); ++it)
     {
         msg.labels.push_back(it->first);
         msg.time_secs.push_back(it->second.getElapsedTimeInSec());
     }
 
-    pub_stats_.publish(msg);
+    pub_stats_->publish(msg);
 }

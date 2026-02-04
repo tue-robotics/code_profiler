@@ -1,64 +1,77 @@
 #include "tue/profiling/ros/profile_publisher.h"
 #include "tue/profiling/profiler.h"
 
-#include <std_msgs/String.h>
-#include <ros/node_handle.h>
+#include <std_msgs/msg/string.hpp>
 
 #include <sstream>
+#include <iostream>
 
 namespace tue
 {
 
 // ----------------------------------------------------------------------------------------------------
 
-ProfilePublisher::ProfilePublisher() : profiler_(nullptr)
+ProfilePublisher::ProfilePublisher() : profiler_(nullptr), node_(nullptr)
 {
 }
 
 // ----------------------------------------------------------------------------------------------------
 
-ProfilePublisher::ProfilePublisher(const Profiler& profiler) : profiler_(&profiler)
+ProfilePublisher::ProfilePublisher(const Profiler& profiler, rclcpp::Node* node) : profiler_(&profiler), node_(node)
 {
-    initialize();
+    initialize(node);
 }
 
 // ----------------------------------------------------------------------------------------------------
 
-ProfilePublisher::ProfilePublisher(const Profiler* profiler) : profiler_(profiler)
+ProfilePublisher::ProfilePublisher(const Profiler* profiler, rclcpp::Node* node) : profiler_(profiler), node_(node)
 {
-    initialize();
+    initialize(node);
 }
 
 // ----------------------------------------------------------------------------------------------------
 
-void ProfilePublisher::initialize(const Profiler& profiler)
+void ProfilePublisher::initialize(const Profiler& profiler, rclcpp::Node* node)
 {
     profiler_ = &profiler;
-    initialize();
+    node_ = node;
+    initialize(node);
 }
 
 // ----------------------------------------------------------------------------------------------------
 
-void ProfilePublisher::initialize(const Profiler* profiler)
+void ProfilePublisher::initialize(const Profiler* profiler, rclcpp::Node* node)
 {
     profiler_ = profiler;
-    initialize();
+    node_ = node;
+    initialize(node);
 }
 
 // ----------------------------------------------------------------------------------------------------
 
-void ProfilePublisher::initialize()
+void ProfilePublisher::initialize(rclcpp::Node* node)
 {
-    assert((void("Profiler is a nullptr"), profiler_));
-    ros::NodeHandle nh("~");
-    pub_stats_ = nh.advertise<std_msgs::String>("profile/" + profiler_->getName(), 1);
+    if (!profiler_)
+    {
+        std::cerr << "[tue::Profiler] ProfilePublisher: Profiler is a nullptr" << std::endl;
+        return;
+    }
+    
+    if (!node)
+    {
+        std::cerr << "[tue::Profiler] ProfilePublisher: Node is a nullptr" << std::endl;
+        return;
+    }
+    
+    node_ = node;
+    pub_stats_ = node_->create_publisher<std_msgs::msg::String>("profile/" + profiler_->getName(), 1);
 }
 
 // ----------------------------------------------------------------------------------------------------
 
 void ProfilePublisher::publish() const
 {
-    if (pub_stats_.getTopic() == "")
+    if (!pub_stats_)
     {
         std::cout << "[tue::Profiler] ProfilePublisher not initialized." << std::endl;
         return;
@@ -67,10 +80,10 @@ void ProfilePublisher::publish() const
     std::stringstream s;
     s << *profiler_;
 
-    std_msgs::String msg;
+    std_msgs::msg::String msg;
     msg.data = s.str();
 
-    pub_stats_.publish(msg);
+    pub_stats_->publish(msg);
 }
 
 }

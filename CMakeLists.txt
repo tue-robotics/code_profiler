@@ -14,13 +14,13 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
-# 1. Dit maakt intern al een target "code_profiler" aan!
+# 1. This internally creates a target "code_profiler"
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/Statistics.msg"
   DEPENDENCIES std_msgs
 )
 
-# 2. Geef de library een unieke naam (Projectnaam + _lib)
+# 2. Give the library a unique name (Project name + _lib)
 add_library(${PROJECT_NAME}_lib SHARED
   src/loop_timer.cpp
   src/profiler.cpp
@@ -32,7 +32,7 @@ add_library(${PROJECT_NAME}_lib SHARED
   src/timer.cpp
 )
 
-# Koppel de typesupport van je eigen berichten
+# Link the typesupport of custom messages
 rosidl_get_typesupport_target(cpp_typesupport_target ${PROJECT_NAME} "rosidl_typesupport_cpp")
 target_link_libraries(${PROJECT_NAME}_lib
   PRIVATE
@@ -46,7 +46,7 @@ target_include_directories(${PROJECT_NAME}_lib PUBLIC
   $<INSTALL_INTERFACE:include>
 )
 
-# 3. Executables (Zorg dat ze ALLEMAAL zijn gedefinieerd voor de install stap)
+# 3. Executables (Make sure they are all defined before the install step)
 add_executable(profiler_test src/main.cpp)
 target_link_libraries(profiler_test ${PROJECT_NAME}_lib)
 
@@ -56,7 +56,7 @@ target_link_libraries(test_loop_timer ${PROJECT_NAME}_lib)
 add_executable(test_profiler test/test_profiler.cpp)
 target_link_libraries(test_profiler ${PROJECT_NAME}_lib)
 
-# 4. Installatie
+# 4. Installation
 install(TARGETS ${PROJECT_NAME}_lib
   EXPORT export_${PROJECT_NAME}
   LIBRARY DESTINATION lib
@@ -65,6 +65,11 @@ install(TARGETS ${PROJECT_NAME}_lib
 )
 
 install(DIRECTORY include/ DESTINATION include)
+
+install(PROGRAMS
+  scripts/liveprofile
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 install(TARGETS
     profiler_test
@@ -76,5 +81,11 @@ install(TARGETS
 # 5. Export
 ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
 ament_export_dependencies(rclcpp std_msgs)
+
+# 6. Testing and Linting
+if(BUILD_TESTING)
+  find_package(ament_lint_auto REQUIRED)
+  ament_lint_auto_find_test_dependencies()
+endif()
 
 ament_package()
