@@ -1,7 +1,8 @@
-#define PROFILEAPP
 #include "profiling/Timer.h"
 #include "profiling/Profiler.h"
+
 #include <iostream>
+#include <thread>
 
 Timer t;
 int testProf()
@@ -22,9 +23,9 @@ int testProf()
 
 void testProf2()
 {
-    boost::thread t1(&testProf);
+    std::thread t1(&testProf);
     t1.join();
-    boost::thread t2(&testProf);
+    std::thread t2(&testProf);
     t2.join();
 }
 

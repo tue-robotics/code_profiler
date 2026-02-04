@@ -40,7 +40,6 @@ target_link_libraries(${PROJECT_NAME}_lib
     rclcpp::rclcpp
     std_msgs::std_msgs__rosidl_typesupport_cpp
 )
-
 target_include_directories(${PROJECT_NAME}_lib PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>

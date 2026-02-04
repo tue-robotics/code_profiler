@@ -1,10 +1,7 @@
 #include "profiling/Profiler.h"
-#ifdef PROFILEAPP
 #include "profiling/ProfileLog.h"
+
 #include <iomanip>
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/config.hpp>
-#include <boost/filesystem/path.hpp>
 
 using namespace std;
 
@@ -40,5 +37,3 @@ void ProfileLog::PrintLog(std::vector< std::map< std::string, Statistics >* >& s
     ProfileLog::PrintLog(std::cout, stats, totalTime);
 
 }
-
-#endif

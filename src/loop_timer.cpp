@@ -1,7 +1,6 @@
 #include "tue/profiling/loop_timer.h"
 
 #include <stdlib.h>
-#include <exception>
 
 namespace tue
 {

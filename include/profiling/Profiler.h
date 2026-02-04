@@ -1,15 +1,15 @@
 #ifndef PROFILER_H
 #define PROFILER_H
-#include <string>
-#include <map>
-#include <vector>
-#include <boost/thread.hpp>
-#include <boost/utility.hpp>
+
 #include "Timer.h"
 #include "profiling/ProfileLog.h"
 
-
-#ifdef PROFILEAPP
+#include <algorithm>
+#include <map>
+#include <mutex>
+#include <string>
+#include <thread>
+#include <vector>
 
 static std::string LOGGING_LOCATION = "~/profile_logs";
 
@@ -35,7 +35,7 @@ class ThreadProfiler
 public:
     ThreadProfiler()
     {
-        threadId = boost::this_thread::get_id();
+        threadId = std::this_thread::get_id();
         currentlyProfiling = "";
         stats = new FunctionStats();
     }
@@ -49,7 +49,7 @@ public:
     FunctionStatsPtr stats;
 
 private:
-    boost::thread::id threadId;
+    std::thread::id threadId;
     std::string currentlyProfiling;
 };
 
@@ -61,10 +61,10 @@ public:
 
     inline ThreadProfiler& Profiler()
     {
-        if(profiler.get() == NULL)
+        if(!profiler)
         {
-            profiler.reset(new ThreadProfiler());
-            boost::lock_guard<boost::mutex> lock(mutex);
+            profiler = std::make_unique<ThreadProfiler>();
+            std::lock_guard<std::mutex> lock(mutex);
             threadStats.push_back(profiler.get()->stats);
         }
 
@@ -73,12 +73,14 @@ public:
 
     ~ThreadProfilerManager();
 private:
-    boost::thread_specific_ptr<ThreadProfiler> profiler;
-    boost::mutex mutex;
+    static thread_local std::unique_ptr<ThreadProfiler> profiler;
+    std::mutex mutex;
     std::vector<FunctionStatsPtr> threadStats;
     Timer timer;
 
 };
+
+thread_local std::unique_ptr<ThreadProfiler> ThreadProfilerManager::profiler = nullptr;
 
 //Global threadProfiler
 static ThreadProfilerManager manager;
@@ -141,20 +143,7 @@ inline ThreadProfilerManager::~ThreadProfilerManager()
 {
     timer.stop();
     ProfileLog::PrintLog(threadStats, timer.getElapsedTimeInMilliSec());
-   deleteAll<FunctionStatsPtr>(threadStats);
+    deleteAll<FunctionStatsPtr>(threadStats);
 }
-
-
-#else
-class ThreadProfiler
-{
-public:
-    static void Start(std::string name);
-    static void Stop(std::string name);
-};
-
-inline void ThreadProfiler::Start(std::string){}
-inline void ThreadProfiler::Stop(std::string){}
-#endif
 
 #endif
