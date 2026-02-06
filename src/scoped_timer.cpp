@@ -6,7 +6,7 @@ namespace tue
 
 // ----------------------------------------------------------------------------------------------------
 
-ScopedTimer::ScopedTimer(Profiler& profiler, const std::string& label)
+ScopedTimer::ScopedTimer(Profiler & profiler, const std::string & label)
     : profiler_(profiler)
 {
     profiler_.startTimer(label);

@@ -7,37 +7,37 @@
 namespace tue
 {
 
-class Profiler;
+    class Profiler;
 
-class ProfilePublisher {
+    class ProfilePublisher {
 
 public:
 
-    ProfilePublisher();
+        ProfilePublisher();
 
-    ProfilePublisher(const Profiler& profiler, rclcpp::Node* node);
+        ProfilePublisher(const Profiler & profiler, rclcpp::Node * node);
 
-    ProfilePublisher(const Profiler* profiler, rclcpp::Node* node);
+        ProfilePublisher(const Profiler * profiler, rclcpp::Node * node);
 
-    virtual ~ProfilePublisher() = default;
+        virtual ~ProfilePublisher() = default;
 
-    void initialize(const Profiler& profiler, rclcpp::Node* node);
+        void initialize(const Profiler & profiler, rclcpp::Node * node);
 
-    void initialize(const Profiler* profiler, rclcpp::Node* node);
+        void initialize(const Profiler * profiler, rclcpp::Node * node);
 
-    void publish() const;
+        void publish() const;
 
 protected:
 
-    void initialize(rclcpp::Node* node);
+        void initialize(rclcpp::Node * node);
 
-    const Profiler* profiler_;
+        const Profiler * profiler_;
 
-    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_stats_;
+        rclcpp::Publisher < std_msgs::msg::String > ::SharedPtr pub_stats_;
 
-    rclcpp::Node* node_;
+        rclcpp::Node * node_;
 
-};
+    };
 
 }
 

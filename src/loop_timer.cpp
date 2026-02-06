@@ -5,7 +5,7 @@
 namespace tue
 {
 
-LoopTimer::LoopTimer(): counts_(0), sum_(0.0), c_(0.0)
+LoopTimer::LoopTimer() : counts_(0), sum_(0.0), c_(0.0)
 {
 }
 
@@ -23,7 +23,7 @@ void LoopTimer::stop()
     long double time = timer_.getElapsedTime();
     long double y = time - c_;
     long double x = sum_ + y;
-    c_ = ( x - sum_ ) - y;
+    c_ = (x - sum_) - y;
     sum_ = x;
 }
 
@@ -57,15 +57,15 @@ long double LoopTimer::getAverageLoopTime()
     if (timer_.running())
         this->stop();
 
-    return sum_/counts_;
+    return sum_ / counts_;
 }
 
 long double LoopTimer::getAverageLoopTime() const
 {
     if (timer_.running())
-        return sum_/std::max<int>(counts_ - 1, 1);
+        return sum_ / std::max<int>(counts_ - 1, 1);
 
-    return sum_/counts_;
+    return sum_ / counts_;
 }
 
 
@@ -76,13 +76,12 @@ long double LoopTimer::getTotalTime() const
 
 double LoopTimer::getLoopUsagePercentage()
 {
-    return getTotalLoopTime()/getTotalTime();
+    return getTotalLoopTime() / getTotalTime();
 }
 
 double LoopTimer::getLoopUsagePercentage() const
 {
-    return getTotalLoopTime()/getTotalTime();
+    return getTotalLoopTime() / getTotalTime();
 }
 
 }
-

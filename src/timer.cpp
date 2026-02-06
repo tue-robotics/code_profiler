@@ -3,7 +3,7 @@
 // =========
 // High Resolution Timer.
 // This timer is able to measure the elapsed time with 1 micro-second accuracy
-// in both Windows, Linux and Unix system 
+// in both Windows, Linux and Unix system
 //
 //  AUTHOR: Song Ho Ahn (song.ahn@gmail.com)
 // CREATED: 2003-01-13
@@ -20,12 +20,12 @@ namespace tue
 {
 
 #ifdef WIN32
-inline long double timeCountsToLongDouble(const LARGE_INTEGER& counts, const LARGE_INTEGER& frequency)
+inline long double timeCountsToLongDouble(const LARGE_INTEGER & counts, const LARGE_INTEGER & frequency)
 {
     return counts.QuadPart * (1000000.0 / frequency.QuadPart);
 }
 #else
-inline long double timevalToLongDouble(const timeval& time)
+inline long double timevalToLongDouble(const timeval & time)
 {
     return (time.tv_sec * 1000000.0) + time.tv_usec;
 }
@@ -74,7 +74,7 @@ long double Timer::getElapsedTimeInMicroSec() const
 {
 #ifdef WIN32
     LARGE_INTEGER endCount;
-    if(!running_)
+    if (!running_)
         endCount = endCount_;
     else
         QueryPerformanceCounter(&endCount);
@@ -112,13 +112,13 @@ long double Timer::getElapsedTime() const
 
 void Timer::printLastElapsedTime(std::string m)
 {
-	std::cout << m << " (sec): " << getElapsedTimeInSec() << std::endl;
+    std::cout << m << " (sec): " << getElapsedTimeInSec() << std::endl;
 }
 
 
 void Timer::printLastElapsedTimeMSec(std::string m)
 {
-	std::cout << m << " (msec): " << getElapsedTimeInMilliSec() << std::endl;
+    std::cout << m << " (msec): " << getElapsedTimeInMilliSec() << std::endl;
 }
 
 long double Timer::nowMicroSec()
@@ -141,8 +141,7 @@ long double Timer::nowMilliSec()
 
 long double Timer::now()
 {
-return Timer::nowMicroSec() * 0.000001;
+    return Timer::nowMicroSec() * 0.000001;
 }
 
 }
-

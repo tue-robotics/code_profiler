@@ -10,8 +10,8 @@ struct Statistics;
 class ProfileLog
 {
 public:
-    static void PrintLog(std::ostream& stream, std::vector< std::map< std::string, Statistics >* >&  stats, double totalTime);
-    static void PrintLog(std::vector< std::map< std::string, Statistics >* >& stats, double totalTime);
+    static void PrintLog(std::ostream & stream, std::vector < std::map < std::string, Statistics > * > &stats, double totalTime);
+    static void PrintLog(std::vector < std::map < std::string, Statistics > * > &stats, double totalTime);
 
 };
 

@@ -36,7 +36,7 @@ Timer::~Timer()
 ///////////////////////////////////////////////////////////////////////////////
 void Timer::start()
 {
-    stopped = false; // reset stop flag
+    stopped = false;      // reset stop flag
     startPoint = std::chrono::high_resolution_clock::now();
 }
 
@@ -46,7 +46,7 @@ void Timer::start()
 ///////////////////////////////////////////////////////////////////////////////
 void Timer::stop()
 {
-    stopped = true; // set timer stopped flag
+    stopped = true;      // set timer stopped flag
     endPoint = std::chrono::high_resolution_clock::now();
 }
 
@@ -56,7 +56,7 @@ void Timer::stop()
 ///////////////////////////////////////////////////////////////////////////////
 double Timer::getElapsedTimeInNanoSec() const
 {
-    if(!stopped)
+    if (!stopped)
         endPoint = std::chrono::high_resolution_clock::now();
 
     // time interval (nanosec) as double

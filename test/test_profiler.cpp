@@ -27,7 +27,7 @@ int main()
 
     profiler.startTimer("total");
 
-    for(unsigned int i = 0; i < 1000; ++i)
+    for (unsigned int i = 0; i < 1000; ++i)
     {
         tue::ScopedTimer t_iteration(profiler, "iteration");
 
