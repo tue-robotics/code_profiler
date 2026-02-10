@@ -1,0 +1,25 @@
+---
+BasedOnStyle: LLVM
+
+AccessModifierOffset: 0 # TODO
+AlignAfterOpenBracket: true
+AlignArrayOfStructures: None
+AlignConsecutiveAssignments: None
+AlignConsecutiveBitFields: Consecutive
+AlignConsecutiveDeclarations: None
+AlignConsecutiveMacros: Consecutive
+AlignTrailingComments: Never
+AllowAllArgumentsOnNextLine: false
+AllowShortBlocksOnASingleLine: true
+AllowShortFunctionsOnASingleLine: All
+BreakAfterAttributes: Always
+BreakBeforeBraces: Allman
+# BraceWrapping:
+#   BeforeWhile: true
+#   IndentBraces: false
+ColumnLimit: 120
+IndentAccessModifiers: false # TODO
+IndentWidth: 4
+InsertNewlineAtEOF: true
+# InsertTrailingCommas: Wrapped
+PointerAlignment: Left
