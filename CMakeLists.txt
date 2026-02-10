@@ -9,6 +9,8 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wextra -Werror=extra)
 endif()
 
+find_package(Threads REQUIRED)
+
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
@@ -47,7 +49,7 @@ target_include_directories(${PROJECT_NAME}_lib PUBLIC
 
 # 3. Executables (Make sure they are all defined before the install step)
 add_executable(profiler_test src/main.cpp)
-target_link_libraries(profiler_test ${PROJECT_NAME}_lib)
+target_link_libraries(profiler_test ${PROJECT_NAME}_lib Threads::Threads)
 
 add_executable(test_loop_timer test/test_loop_timer.cpp)
 target_link_libraries(test_loop_timer ${PROJECT_NAME}_lib)
