@@ -17,7 +17,7 @@ class LiveProfile(Node):
 
     def __init__(self):
         super().__init__('liveprofile')
-        
+
         args = sys.argv
         if len(args) < 2:
             self.get_logger().error(f'usage: {args[0]} topicname')
