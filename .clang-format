@@ -1,25 +1,64 @@
 ---
 BasedOnStyle: LLVM
 
-AccessModifierOffset: 0 # TODO
+AccessModifierOffset: -4
 AlignAfterOpenBracket: true
 AlignArrayOfStructures: None
 AlignConsecutiveAssignments: None
 AlignConsecutiveBitFields: Consecutive
 AlignConsecutiveDeclarations: None
 AlignConsecutiveMacros: Consecutive
-AlignTrailingComments: Never
-AllowAllArgumentsOnNextLine: false
-AllowShortBlocksOnASingleLine: true
-AllowShortFunctionsOnASingleLine: All
+AlignConsecutiveShortCaseStatements:
+  Enabled: false
+AlignOperands: Align
+AlignTrailingComments: false
+AllowAllArgumentsOnNextLine: true
+AllowAllParametersOfDeclarationOnNextLine: true
+AllowShortBlocksOnASingleLine: Always
+AllowShortCaseExpressionOnASingleLine: true
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLambdasOnASingleLine: All
+AllowShortNamespacesOnASingleLine: true
+AlwaysBreakBeforeMultilineStrings: true
+
+BinPackArguments: false
+BinPackLongBracedList: true
+BinPackParameters: OnePerLine
+BitFieldColonSpacing: None
+BreakAdjacentStringLiterals: true
 BreakAfterAttributes: Always
+# BreakAfterOpenBracketBracedList: true
+# BreakAfterOpenBracketFunction: true
+# BreakAfterOpenBracketIf: true
+# BreakAfterOpenBracketLoop: true
+# BreakAfterOpenBracketSwitch: true
+BreakAfterReturnType: ExceptShortType
+BreakBeforeBinaryOperators: None
 BreakBeforeBraces: Allman
-# BraceWrapping:
-#   BeforeWhile: true
-#   IndentBraces: false
+BreakBeforeTemplateCloser: true
+BreakBeforeTernaryOperators: true
+BreakConstructorInitializers: AfterColon
+BreakFunctionDefinitionParameters: false
+BreakInheritanceList: AfterColon
+
 ColumnLimit: 120
-IndentAccessModifiers: false # TODO
-IndentWidth: 4
+
+IndentAccessModifiers: false
 InsertNewlineAtEOF: true
-# InsertTrailingCommas: Wrapped
+IndentWidth: 4
+
+NamespaceIndentation: None
+
 PointerAlignment: Left
+
+ReflowComments: Always
+
+Standard: c++17
+SortIncludes:
+  Enabled: true
+  IgnoreCase: true
+  # IgnoreExtension: true
+
+UseTab: Never
