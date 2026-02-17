@@ -1,24 +1,20 @@
 #include "profiling/StatsPublisher.h"
 
-#include <rclcpp/rclcpp.hpp>
 #include <code_profiler/msg/statistics.hpp>
 #include <iostream>
+#include <rclcpp/rclcpp.hpp>
 
 // ----------------------------------------------------------------------------------------------------
 
-StatsPublisher::StatsPublisher() : node_(nullptr)
-{
-}
+StatsPublisher::StatsPublisher() : node_(nullptr) {}
 
 // ----------------------------------------------------------------------------------------------------
 
-StatsPublisher::~StatsPublisher()
-{
-}
+StatsPublisher::~StatsPublisher() {}
 
 // ----------------------------------------------------------------------------------------------------
 
-void StatsPublisher::initialize(rclcpp::Node * node)
+void StatsPublisher::initialize(rclcpp::Node* node)
 {
     if (!node)
     {
@@ -32,7 +28,7 @@ void StatsPublisher::initialize(rclcpp::Node * node)
 
 // ----------------------------------------------------------------------------------------------------
 
-void StatsPublisher::startTimer(const std::string & label)
+void StatsPublisher::startTimer(const std::string& label)
 {
     timers_[label].start();
     stack_.push(ScopeStat(label));
@@ -40,7 +36,7 @@ void StatsPublisher::startTimer(const std::string & label)
 
 // ----------------------------------------------------------------------------------------------------
 
-void StatsPublisher::stopTimer(const std::string & label)
+void StatsPublisher::stopTimer(const std::string& label)
 {
     std::map<std::string, Timer>::iterator it = timers_.find(label);
     if (it == timers_.end())

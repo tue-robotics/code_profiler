@@ -7,27 +7,21 @@ namespace tue
 
 // ----------------------------------------------------------------------------------------------------
 
-Profiler::Profiler() : head_(nullptr), parent_(nullptr)
-{
-}
+Profiler::Profiler() : head_(nullptr), parent_(nullptr) {}
 
 // ----------------------------------------------------------------------------------------------------
 
-Profiler::Profiler(const std::string & name) : name_(name), head_(nullptr), parent_(nullptr)
-{
-}
+Profiler::Profiler(const std::string& name) : name_(name), head_(nullptr), parent_(nullptr) {}
 
 // ----------------------------------------------------------------------------------------------------
 
-Profiler::Profiler(const std::string & name, Profiler * parent) : name_(name), head_(nullptr), parent_(parent)
-{
-}
+Profiler::Profiler(const std::string& name, Profiler* parent) : name_(name), head_(nullptr), parent_(parent) {}
 
 // ----------------------------------------------------------------------------------------------------
 
 Profiler::~Profiler()
 {
-    for (std::map<std::string, Profiler *>::iterator it = children_.begin(); it != children_.end(); ++it)
+    for (std::map<std::string, Profiler*>::iterator it = children_.begin(); it != children_.end(); ++it)
     {
         delete it->second;
     }
@@ -35,15 +29,15 @@ Profiler::~Profiler()
 
 // ----------------------------------------------------------------------------------------------------
 
-void Profiler::startTimer(const std::string & name)
+void Profiler::startTimer(const std::string& name)
 {
     if (!head_)
     {
         head_ = this;
     }
 
-    Profiler * child;
-    std::map<std::string, Profiler *>::iterator it_child = head_->children_.find(name);
+    Profiler* child;
+    std::map<std::string, Profiler*>::iterator it_child = head_->children_.find(name);
     if (it_child != head_->children_.end())
     {
         child = it_child->second;
@@ -75,7 +69,7 @@ void Profiler::stopTimer()
 
 // ----------------------------------------------------------------------------------------------------
 
-void Profiler::addToStream(std::ostream & out, const std::string & prefix) const
+void Profiler::addToStream(std::ostream& out, const std::string& prefix) const
 {
     if (!parent_)
     {
@@ -86,7 +80,7 @@ void Profiler::addToStream(std::ostream & out, const std::string & prefix) const
         out << prefix << name_ << ": " << timer_.getElapsedTimeInMilliSec() << " ms" << std::endl;
     }
 
-    for (std::map<std::string, Profiler *>::const_iterator it = children_.begin(); it != children_.end(); ++it)
+    for (std::map<std::string, Profiler*>::const_iterator it = children_.begin(); it != children_.end(); ++it)
     {
         it->second->addToStream(out, prefix + "  ");
     }
@@ -94,10 +88,10 @@ void Profiler::addToStream(std::ostream & out, const std::string & prefix) const
 
 // ----------------------------------------------------------------------------------------------------
 
-std::ostream &operator<<(std::ostream & out, const Profiler & p)
+std::ostream& operator<<(std::ostream& out, const Profiler& p)
 {
     p.addToStream(out);
     return out;
 }
 
-}
+} // namespace tue

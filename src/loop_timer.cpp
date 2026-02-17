@@ -5,9 +5,7 @@
 namespace tue
 {
 
-LoopTimer::LoopTimer() : counts_(0), sum_(0.0), c_(0.0)
-{
-}
+LoopTimer::LoopTimer() : counts_(0), sum_(0.0), c_(0.0) {}
 
 void LoopTimer::start()
 {
@@ -68,7 +66,6 @@ long double LoopTimer::getAverageLoopTime() const
     return sum_ / counts_;
 }
 
-
 long double LoopTimer::getTotalTime() const
 {
     return total_timer_.getElapsedTime();
@@ -84,4 +81,4 @@ double LoopTimer::getLoopUsagePercentage() const
     return getTotalLoopTime() / getTotalTime();
 }
 
-}
+} // namespace tue

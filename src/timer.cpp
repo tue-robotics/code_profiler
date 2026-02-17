@@ -20,12 +20,12 @@ namespace tue
 {
 
 #ifdef WIN32
-inline long double timeCountsToLongDouble(const LARGE_INTEGER & counts, const LARGE_INTEGER & frequency)
+inline long double timeCountsToLongDouble(const LARGE_INTEGER& counts, const LARGE_INTEGER& frequency)
 {
     return counts.QuadPart * (1000000.0 / frequency.QuadPart);
 }
 #else
-inline long double timevalToLongDouble(const timeval & time)
+inline long double timevalToLongDouble(const timeval& time)
 {
     return (time.tv_sec * 1000000.0) + time.tv_usec;
 }
@@ -45,9 +45,7 @@ Timer::Timer() : running_(false)
 #endif
 }
 
-Timer::~Timer()
-{
-}
+Timer::~Timer() {}
 
 void Timer::start()
 {
@@ -115,7 +113,6 @@ void Timer::printLastElapsedTime(std::string m)
     std::cout << m << " (sec): " << getElapsedTimeInSec() << std::endl;
 }
 
-
 void Timer::printLastElapsedTimeMSec(std::string m)
 {
     std::cout << m << " (msec): " << getElapsedTimeInMilliSec() << std::endl;
@@ -144,4 +141,4 @@ long double Timer::now()
     return Timer::nowMicroSec() * 0.000001;
 }
 
-}
+} // namespace tue

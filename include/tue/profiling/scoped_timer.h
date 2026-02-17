@@ -6,23 +6,20 @@
 namespace tue
 {
 
-    class Profiler;
+class Profiler;
 
-    class ScopedTimer
-    {
+class ScopedTimer
+{
 
 public:
+    ScopedTimer(Profiler& profiler, const std::string& label);
 
-        ScopedTimer(Profiler & profiler, const std::string & label);
-
-        virtual ~ScopedTimer();
+    virtual ~ScopedTimer();
 
 private:
+    Profiler& profiler_;
+};
 
-        Profiler & profiler_;
-
-    };
-
-}
+} // namespace tue
 
 #endif

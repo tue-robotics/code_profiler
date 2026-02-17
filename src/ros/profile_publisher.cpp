@@ -3,35 +3,33 @@
 
 #include <std_msgs/msg/string.hpp>
 
-#include <sstream>
 #include <iostream>
+#include <sstream>
 
 namespace tue
 {
 
 // ----------------------------------------------------------------------------------------------------
 
-ProfilePublisher::ProfilePublisher() : profiler_(nullptr), node_(nullptr)
-{
-}
+ProfilePublisher::ProfilePublisher() : profiler_(nullptr), node_(nullptr) {}
 
 // ----------------------------------------------------------------------------------------------------
 
-ProfilePublisher::ProfilePublisher(const Profiler & profiler, rclcpp::Node * node) : profiler_(&profiler), node_(node)
+ProfilePublisher::ProfilePublisher(const Profiler& profiler, rclcpp::Node* node) : profiler_(&profiler), node_(node)
 {
     initialize(node);
 }
 
 // ----------------------------------------------------------------------------------------------------
 
-ProfilePublisher::ProfilePublisher(const Profiler * profiler, rclcpp::Node * node) : profiler_(profiler), node_(node)
+ProfilePublisher::ProfilePublisher(const Profiler* profiler, rclcpp::Node* node) : profiler_(profiler), node_(node)
 {
     initialize(node);
 }
 
 // ----------------------------------------------------------------------------------------------------
 
-void ProfilePublisher::initialize(const Profiler & profiler, rclcpp::Node * node)
+void ProfilePublisher::initialize(const Profiler& profiler, rclcpp::Node* node)
 {
     profiler_ = &profiler;
     node_ = node;
@@ -40,7 +38,7 @@ void ProfilePublisher::initialize(const Profiler & profiler, rclcpp::Node * node
 
 // ----------------------------------------------------------------------------------------------------
 
-void ProfilePublisher::initialize(const Profiler * profiler, rclcpp::Node * node)
+void ProfilePublisher::initialize(const Profiler* profiler, rclcpp::Node* node)
 {
     profiler_ = profiler;
     node_ = node;
@@ -49,7 +47,7 @@ void ProfilePublisher::initialize(const Profiler * profiler, rclcpp::Node * node
 
 // ----------------------------------------------------------------------------------------------------
 
-void ProfilePublisher::initialize(rclcpp::Node * node)
+void ProfilePublisher::initialize(rclcpp::Node* node)
 {
     if (!profiler_)
     {
@@ -86,4 +84,4 @@ void ProfilePublisher::publish() const
     pub_stats_->publish(msg);
 }
 
-}
+} // namespace tue

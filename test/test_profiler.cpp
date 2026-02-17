@@ -3,7 +3,10 @@
 
 tue::Profiler profiler;
 
-void a() { tue::ScopedTimer t(profiler, "a"); }
+void a()
+{
+    tue::ScopedTimer t(profiler, "a");
+}
 
 void b()
 {
