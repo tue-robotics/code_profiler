@@ -58,21 +58,26 @@ add_executable(test_profiler test/test_profiler.cpp)
 target_link_libraries(test_profiler ${PROJECT_NAME}_lib)
 
 # 4. Installation
-install(TARGETS ${PROJECT_NAME}_lib
+install(
+  TARGETS ${PROJECT_NAME}_lib
   EXPORT export_${PROJECT_NAME}
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
   RUNTIME DESTINATION bin
 )
 
-install(DIRECTORY include/ DESTINATION include)
+install(
+  DIRECTORY include/
+  DESTINATION include
+)
 
-install(PROGRAMS
-  scripts/liveprofile
+install(
+  PROGRAMS scripts/liveprofile
   DESTINATION lib/${PROJECT_NAME}
 )
 
-install(TARGETS
+install(
+  TARGETS
     profiler_test
     test_loop_timer
     test_profiler
@@ -85,8 +90,18 @@ ament_export_dependencies(rclcpp std_msgs rosidl_default_runtime)
 
 # 6. Testing and Linting
 if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  ament_lint_auto_find_test_dependencies()
+  find_package(tue_lint_config REQUIRED)
+  find_package(ament_cmake_clang_format REQUIRED)
+  find_package(ament_cmake_clang_tidy REQUIRED)
+  find_package(ament_cmake_lint_cmake REQUIRED)
+  find_package(ament_cmake_xmllint REQUIRED)
+  ament_clang_format(
+    CONFIG_FILE ${tue_lint_config_DIR}/../config/.clang-format
+    --clang-format-version=21
+  )
+  # ament_clang_tidy()
+  ament_lint_cmake(MAX_LINE_LENGTH 120)
+  ament_xmllint(MAX_LINE_LENGTH 120)
 endif()
 
 ament_package()
