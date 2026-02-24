@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 project(code_profiler)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 17)
 endif()
@@ -99,8 +101,25 @@ if(BUILD_TESTING)
     CONFIG_FILE ${tue_lint_config_DIR}/../config/.clang-format
     --clang-format-version=21
   )
-  # ament_clang_tidy()
-  ament_lint_cmake(MAX_LINE_LENGTH 120)
+  ament_clang_tidy(
+    CONFIG_FILE ${tue_lint_config_DIR}/../config/.clang-tidy
+    # --fix-errors
+    ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_BINARY_DIR}/compile_commands.json)
+  ament_lint_cmake(MAX_LINE_LENGTH 120 "--filter=
+    +convention/filename,
+    +linelength,
+    +package/consistency,
+    +package/stdargs,
+    +readability/logic,
+    +readability/mixedcase,
+    +readability/wonkycase,
+    +syntax,+whitespace/eol,
+    +whitespace/extra,
+    +whitespace/indent,
+    +whitespace/mismatch,
+    +whitespace/newline,
+    +whitespace/tabs"
+  )
   ament_xmllint(MAX_LINE_LENGTH 120)
 endif()
 
