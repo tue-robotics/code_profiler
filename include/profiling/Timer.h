@@ -21,8 +21,8 @@
 class Timer
 {
 public:
-    Timer(); // default constructor
-    ~Timer(); // default destructor
+    Timer();
+    ~Timer() = default;
 
     void start(); // start timer
     void stop(); // stop the timer
@@ -31,10 +31,10 @@ public:
     double getElapsedTimeInMilliSec() const; // get elapsed time in milli-second (10^-3)
     double getElapsedTimeInMicroSec() const; // get elapsed time in micro-second (10^-6)
     double getElapsedTimeInNanoSec() const; // get elapsed time in nano-second (10^-9)
-    void printLastElapsedTime(std::string) const; // TUe
-    void printLastElapsedTimeInMilliSec(std::string) const; // TUe
-    void printLastElapsedTimeInMicroSec(std::string) const; // TUe
-    void printLastElapsedTimeInNanoSec(std::string) const; // TUe
+    void printLastElapsedTime(const std::string&) const; // TUe
+    void printLastElapsedTimeInMilliSec(const std::string&) const; // TUe
+    void printLastElapsedTimeInMicroSec(const std::string&) const; // TUe
+    void printLastElapsedTimeInNanoSec(const std::string&) const; // TUe
 
 protected:
 private:

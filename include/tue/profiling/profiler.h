@@ -14,7 +14,7 @@ class Profiler
 public:
     Profiler();
 
-    Profiler(const std::string& name);
+    Profiler(std::string name);
 
     virtual ~Profiler();
 
@@ -39,7 +39,7 @@ protected:
 
     std::map<std::string, Profiler*> children_;
 
-    Profiler(const std::string& name, Profiler* parent);
+    Profiler(std::string name, Profiler* parent);
 
     void addToStream(std::ostream& out, const std::string& prefix = "") const;
 };

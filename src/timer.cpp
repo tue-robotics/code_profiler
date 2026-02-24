@@ -14,7 +14,7 @@
 
 #include "tue/profiling/timer.h"
 
-#include <stdlib.h>
+#include <cstdlib>
 
 namespace tue
 {
@@ -45,15 +45,13 @@ Timer::Timer() : running_(false)
 #endif
 }
 
-Timer::~Timer() {}
-
 void Timer::start()
 {
     running_ = true;
 #ifdef WIN32
     QueryPerformanceCounter(&startCount_);
 #else
-    gettimeofday(&start_count_, NULL);
+    gettimeofday(&start_count_, nullptr);
 #endif
 }
 
@@ -64,7 +62,7 @@ void Timer::stop()
 #ifdef WIN32
     QueryPerformanceCounter(&endCount_);
 #else
-    gettimeofday(&end_count_, NULL);
+    gettimeofday(&end_count_, nullptr);
 #endif
 }
 
@@ -80,17 +78,17 @@ long double Timer::getElapsedTimeInMicroSec() const
     long double startTimeInMicroSec = timeCountsToLongDouble(startCount_, frequency_);
     long double endTimeInMicroSec = timeCountsToLongDouble(endCount, frequency_);
 #else
-    timeval end_count;
+    timeval end_count{};
     if (!running_)
         end_count = end_count_;
     else
-        gettimeofday(&end_count, NULL);
+        gettimeofday(&end_count, nullptr);
 
-    long double startTimeInMicroSec = timevalToLongDouble(start_count_);
-    long double endTimeInMicroSec = timevalToLongDouble(end_count);
+    long double start_time_in_micro_sec = timevalToLongDouble(start_count_);
+    long double end_time_in_micro_sec = timevalToLongDouble(end_count);
 #endif
 
-    return endTimeInMicroSec - startTimeInMicroSec;
+    return end_time_in_micro_sec - start_time_in_micro_sec;
 }
 
 long double Timer::getElapsedTimeInMilliSec() const
@@ -108,12 +106,12 @@ long double Timer::getElapsedTime() const
     return this->getElapsedTimeInSec();
 }
 
-void Timer::printLastElapsedTime(std::string m)
+void Timer::printLastElapsedTime(const std::string& m) const
 {
     std::cout << m << " (sec): " << getElapsedTimeInSec() << std::endl;
 }
 
-void Timer::printLastElapsedTimeMSec(std::string m)
+void Timer::printLastElapsedTimeMSec(const std::string& m) const
 {
     std::cout << m << " (msec): " << getElapsedTimeInMilliSec() << std::endl;
 }
@@ -125,8 +123,8 @@ long double Timer::nowMicroSec()
     QueryPerformanceCounter(&nowCount);
     return timeCountsToLongDouble(nowCount);
 #else
-    timeval now_count;
-    gettimeofday(&now_count, NULL);
+    timeval now_count{};
+    gettimeofday(&now_count, nullptr);
     return timevalToLongDouble(now_count);
 #endif
 }

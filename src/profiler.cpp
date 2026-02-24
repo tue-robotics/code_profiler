@@ -1,6 +1,7 @@
 #include "tue/profiling/profiler.h"
 
 #include <iostream>
+#include <utility>
 
 namespace tue
 {
@@ -11,19 +12,19 @@ Profiler::Profiler() : head_(nullptr), parent_(nullptr) {}
 
 // ----------------------------------------------------------------------------------------------------
 
-Profiler::Profiler(const std::string& name) : name_(name), head_(nullptr), parent_(nullptr) {}
+Profiler::Profiler(std::string name) : name_(std::move(name)), head_(nullptr), parent_(nullptr) {}
 
 // ----------------------------------------------------------------------------------------------------
 
-Profiler::Profiler(const std::string& name, Profiler* parent) : name_(name), head_(nullptr), parent_(parent) {}
+Profiler::Profiler(std::string name, Profiler* parent) : name_(std::move(name)), head_(nullptr), parent_(parent) {}
 
 // ----------------------------------------------------------------------------------------------------
 
 Profiler::~Profiler()
 {
-    for (std::map<std::string, Profiler*>::iterator it = children_.begin(); it != children_.end(); ++it)
+    for (auto& it : children_)
     {
-        delete it->second;
+        delete it.second;
     }
 }
 
@@ -36,8 +37,8 @@ void Profiler::startTimer(const std::string& name)
         head_ = this;
     }
 
-    Profiler* child;
-    std::map<std::string, Profiler*>::iterator it_child = head_->children_.find(name);
+    Profiler* child = nullptr;
+    auto it_child = head_->children_.find(name);
     if (it_child != head_->children_.end())
     {
         child = it_child->second;
@@ -80,9 +81,9 @@ void Profiler::addToStream(std::ostream& out, const std::string& prefix) const
         out << prefix << name_ << ": " << timer_.getElapsedTimeInMilliSec() << " ms" << std::endl;
     }
 
-    for (std::map<std::string, Profiler*>::const_iterator it = children_.begin(); it != children_.end(); ++it)
+    for (const auto& it : children_)
     {
-        it->second->addToStream(out, prefix + "  ");
+        it.second->addToStream(out, prefix + "  ");
     }
 }
 

@@ -10,7 +10,7 @@ StatsPublisher::StatsPublisher() : node_(nullptr) {}
 
 // ----------------------------------------------------------------------------------------------------
 
-StatsPublisher::~StatsPublisher() {}
+StatsPublisher::~StatsPublisher() = default;
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -38,7 +38,7 @@ void StatsPublisher::startTimer(const std::string& label)
 
 void StatsPublisher::stopTimer(const std::string& label)
 {
-    std::map<std::string, Timer>::iterator it = timers_.find(label);
+    auto it = timers_.find(label);
     if (it == timers_.end())
     {
         std::cout << "code_profiler: no timer found for label '" << label << "'." << std::endl;
@@ -70,10 +70,10 @@ void StatsPublisher::publish() const
     }
 
     code_profiler::msg::Statistics msg;
-    for (std::map<std::string, Timer>::const_iterator it = timers_.begin(); it != timers_.end(); ++it)
+    for (const auto& timer : timers_)
     {
-        msg.labels.push_back(it->first);
-        msg.time_secs.push_back(it->second.getElapsedTimeInSec());
+        msg.labels.push_back(timer.first);
+        msg.time_secs.push_back(timer.second.getElapsedTimeInSec());
     }
 
     pub_stats_->publish(msg);

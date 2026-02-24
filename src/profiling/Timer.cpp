@@ -22,11 +22,6 @@
 Timer::Timer() : startPoint(std::chrono::high_resolution_clock::now()), endPoint(startPoint), stopped(false) {}
 
 ///////////////////////////////////////////////////////////////////////////////
-// destructor
-///////////////////////////////////////////////////////////////////////////////
-Timer::~Timer() {}
-
-///////////////////////////////////////////////////////////////////////////////
 // start timer.
 // startPoint will be set at this point.
 ///////////////////////////////////////////////////////////////////////////////
@@ -92,22 +87,22 @@ double Timer::getElapsedTime() const
 }
 
 // TUe
-void Timer::printLastElapsedTime(std::string m) const
+void Timer::printLastElapsedTime(const std::string& m) const
 {
     std::cout << m << " (sec): " << getElapsedTimeInSec() << std::endl;
 }
 
-void Timer::printLastElapsedTimeInMilliSec(std::string m) const
+void Timer::printLastElapsedTimeInMilliSec(const std::string& m) const
 {
     std::cout << m << " (msec): " << getElapsedTimeInMilliSec() << std::endl;
 }
 
-void Timer::printLastElapsedTimeInMicroSec(std::string m) const
+void Timer::printLastElapsedTimeInMicroSec(const std::string& m) const
 {
     std::cout << m << " (μsec): " << getElapsedTimeInMicroSec() << std::endl;
 }
 
-void Timer::printLastElapsedTimeInNanoSec(std::string m) const
+void Timer::printLastElapsedTimeInNanoSec(const std::string& m) const
 {
     std::cout << m << " (nsec): " << getElapsedTimeInNanoSec() << std::endl;
 }

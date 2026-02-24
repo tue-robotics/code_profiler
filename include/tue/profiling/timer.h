@@ -31,7 +31,7 @@ class Timer
 {
 public:
     Timer();
-    ~Timer();
+    ~Timer() = default;
 
     void start();
     void stop();
@@ -66,8 +66,8 @@ public:
      */
     long double getElapsedTimeInMicroSec() const;
 
-    void printLastElapsedTime(std::string);
-    void printLastElapsedTimeMSec(std::string);
+    void printLastElapsedTime(const std::string&) const;
+    void printLastElapsedTimeMSec(const std::string&) const;
 
     /**
      * @brief Get the current time in micro-seconds since epoch
@@ -112,12 +112,12 @@ private:
     /**
      * @brief Start counter
      */
-    timeval start_count_;
+    timeval start_count_{};
 
     /**
      * @brief End counter
      */
-    timeval end_count_;
+    timeval end_count_{};
 #endif
 };
 

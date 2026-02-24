@@ -1,6 +1,6 @@
 #include "tue/profiling/loop_timer.h"
 
-#include <stdlib.h>
+#include <cstdlib>
 
 namespace tue
 {
@@ -73,12 +73,12 @@ long double LoopTimer::getTotalTime() const
 
 double LoopTimer::getLoopUsagePercentage()
 {
-    return getTotalLoopTime() / getTotalTime();
+    return static_cast<double>(getTotalLoopTime() / getTotalTime());
 }
 
 double LoopTimer::getLoopUsagePercentage() const
 {
-    return getTotalLoopTime() / getTotalTime();
+    return static_cast<double>(getTotalLoopTime() / getTotalTime());
 }
 
 } // namespace tue
