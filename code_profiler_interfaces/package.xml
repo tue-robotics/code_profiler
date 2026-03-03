@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<?xml-model
+  href="http://download.ros.org/schema/package_format3.xsd"
+  schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>code_profiler_interfaces</name>
+  <version>0.0.0</version>
+  <description>Various classes to profile code in different ways. Including some additonal loop statistics.</description>
+
+  <maintainer email="MatthijsBurgh@outlook.com">Matthijs van der Burgh</maintainer>
+
+  <license>BSD</license>
+
+  <author email="MatthijsBurgh@outlook.com">Matthijs van der Burgh</author>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>rosidl_default_generators</buildtool_depend>
+
+  <exec_depend>rosidl_default_runtime</exec_depend>
+
+  <member_of_group>rosidl_interface_packages</member_of_group>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+    <rosdoc config="rosdoc.yaml" />
+  </export>
+
+</package>
