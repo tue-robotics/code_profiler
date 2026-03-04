@@ -33,7 +33,7 @@ add_library(${PROJECT_NAME} SHARED
 # Link the typesupport of custom messages
 target_link_libraries(${PROJECT_NAME}
   PRIVATE
-    code_profiler_interfaces__rosidl_typesupport_cpp
+    code_profiler_interfaces::code_profiler_interfaces__rosidl_typesupport_cpp
     rclcpp::rclcpp
     std_msgs::std_msgs__rosidl_typesupport_cpp
 )

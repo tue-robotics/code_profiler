@@ -10,15 +10,11 @@ StatsPublisher::StatsPublisher() : node_(nullptr) {}
 
 // ----------------------------------------------------------------------------------------------------
 
-StatsPublisher::~StatsPublisher() = default;
-
-// ----------------------------------------------------------------------------------------------------
-
 void StatsPublisher::initialize(rclcpp::Node* node)
 {
     if (!node)
     {
-        std::cerr << "code_profiler_interfaces: StatsPublisher::initialize() - Node is a nullptr." << std::endl;
+        std::cerr << "code_profiler: StatsPublisher::initialize() - Node is a nullptr." << std::endl;
         return;
     }
 
@@ -41,7 +37,7 @@ void StatsPublisher::stopTimer(const std::string& label)
     auto it = timers_.find(label);
     if (it == timers_.end())
     {
-        std::cout << "code_profiler_interfaces: no timer found for label '" << label << "'." << std::endl;
+        std::cout << "code_profiler: no timer found for label '" << label << "'." << std::endl;
     }
     else
     {
@@ -55,7 +51,7 @@ void StatsPublisher::stopTimer(const std::string& label)
     }
     else
     {
-        std::cout << "code_profiler_interfaces: stopTimer() called, but no timer is active." << std::endl;
+        std::cout << "code_profiler: stopTimer() called, but no timer is active." << std::endl;
     }
 }
 
@@ -65,7 +61,7 @@ void StatsPublisher::publish() const
 {
     if (!pub_stats_)
     {
-        std::cout << "code_profiler_interfaces: StatsPublisher not initialized." << std::endl;
+        std::cout << "code_profiler: StatsPublisher not initialized." << std::endl;
         return;
     }
 
