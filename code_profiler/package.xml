@@ -26,6 +26,7 @@
   <test_depend>ament_cmake_clang_tidy</test_depend>
   <test_depend>ament_cmake_lint_cmake</test_depend>
   <test_depend>ament_cmake_xmllint</test_depend>
+  <test_depend>clang-format-21</test_depend>
   <test_depend>tue_lint_config</test_depend>
 
   <doc_depend>doxygen</doc_depend>
