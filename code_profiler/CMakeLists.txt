@@ -96,7 +96,7 @@ if(BUILD_TESTING)
   )
   ament_clang_tidy(
     CONFIG_FILE ${tue_lint_config_DIR}/../config/.clang-tidy
-    # --fix-errors
+    --clang-tidy-version=21
     ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_BINARY_DIR}/compile_commands.json)
   ament_lint_cmake(MAX_LINE_LENGTH 120 "--filter=
     +convention/filename,
