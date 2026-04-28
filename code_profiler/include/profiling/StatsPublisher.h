@@ -1,7 +1,7 @@
-#ifndef CODE_PROFILER_STATS_PUBLISHER_H_
-#define CODE_PROFILER_STATS_PUBLISHER_H_
+#ifndef code_profiler_STATS_PUBLISHER_H_
+#define code_profiler_STATS_PUBLISHER_H_
 
-#include <code_profiler/msg/statistics.hpp>
+#include <code_profiler_interfaces/msg/statistics.hpp>
 #include <map>
 #include <rclcpp/rclcpp.hpp>
 #include <stack>
@@ -26,7 +26,7 @@ class StatsPublisher
 public:
     StatsPublisher();
 
-    virtual ~StatsPublisher();
+    virtual ~StatsPublisher() = default;
 
     void initialize(rclcpp::Node* node);
 
@@ -37,7 +37,7 @@ public:
     void publish() const;
 
 protected:
-    rclcpp::Publisher<code_profiler::msg::Statistics>::SharedPtr pub_stats_;
+    rclcpp::Publisher<code_profiler_interfaces::msg::Statistics>::SharedPtr pub_stats_;
 
     std::map<std::string, Timer> timers_;
 

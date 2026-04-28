@@ -1,16 +1,12 @@
 #include "profiling/StatsPublisher.h"
 
-#include <code_profiler/msg/statistics.hpp>
+#include <code_profiler_interfaces/msg/statistics.hpp>
 #include <iostream>
 #include <rclcpp/rclcpp.hpp>
 
 // ----------------------------------------------------------------------------------------------------
 
 StatsPublisher::StatsPublisher() : node_(nullptr) {}
-
-// ----------------------------------------------------------------------------------------------------
-
-StatsPublisher::~StatsPublisher() = default;
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -23,7 +19,7 @@ void StatsPublisher::initialize(rclcpp::Node* node)
     }
 
     node_ = node;
-    pub_stats_ = node_->create_publisher<code_profiler::msg::Statistics>("profiler_stats", 1);
+    pub_stats_ = node_->create_publisher<code_profiler_interfaces::msg::Statistics>("profiler_stats", 1);
 }
 
 // ----------------------------------------------------------------------------------------------------
@@ -69,7 +65,7 @@ void StatsPublisher::publish() const
         return;
     }
 
-    code_profiler::msg::Statistics msg;
+    code_profiler_interfaces::msg::Statistics msg;
     for (const auto& timer : timers_)
     {
         msg.labels.push_back(timer.first);
