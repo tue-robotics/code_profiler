@@ -1,0 +1,142 @@
+//////////////////////////////////////////////////////////////////////////////
+// Timer.cpp
+// =========
+// High Resolution Timer.
+// This timer is able to measure the elapsed time with 1 micro-second accuracy
+// in both Windows, Linux and Unix system
+//
+//  AUTHOR: Song Ho Ahn (song.ahn@gmail.com)
+// CREATED: 2003-01-13
+// UPDATED: 2006-01-13
+//
+// Copyright (c) 2003 Song Ho Ahn
+//////////////////////////////////////////////////////////////////////////////
+
+#include "tue/profiling/timer.h"
+
+#include <cstdlib>
+
+namespace tue
+{
+
+#ifdef WIN32
+inline long double timeCountsToLongDouble(const LARGE_INTEGER& counts, const LARGE_INTEGER& frequency)
+{
+    return counts.QuadPart * (1000000.0 / frequency.QuadPart);
+}
+#else
+inline long double timevalToLongDouble(const timeval& time)
+{
+    return (time.tv_sec * 1000000.0) + time.tv_usec;
+}
+#endif
+
+// ----------------------------------------------------------------------------------------------------
+
+Timer::Timer() : running_(false)
+{
+#ifdef WIN32
+    QueryPerformanceFrequency(&frequency_);
+    startCount_.QuadPart = 0;
+    endCount_.QuadPart = 0;
+#else
+    start_count_.tv_sec = start_count_.tv_usec = 0;
+    end_count_.tv_sec = end_count_.tv_usec = 0;
+#endif
+}
+
+void Timer::start()
+{
+    running_ = true;
+#ifdef WIN32
+    QueryPerformanceCounter(&startCount_);
+#else
+    gettimeofday(&start_count_, nullptr);
+#endif
+}
+
+void Timer::stop()
+{
+    running_ = false;
+
+#ifdef WIN32
+    QueryPerformanceCounter(&endCount_);
+#else
+    gettimeofday(&end_count_, nullptr);
+#endif
+}
+
+long double Timer::getElapsedTimeInMicroSec() const
+{
+#ifdef WIN32
+    LARGE_INTEGER endCount;
+    if (!running_)
+        endCount = endCount_;
+    else
+        QueryPerformanceCounter(&endCount);
+
+    long double startTimeInMicroSec = timeCountsToLongDouble(startCount_, frequency_);
+    long double endTimeInMicroSec = timeCountsToLongDouble(endCount, frequency_);
+#else
+    timeval end_count{};
+    if (!running_)
+        end_count = end_count_;
+    else
+        gettimeofday(&end_count, nullptr);
+
+    long double start_time_in_micro_sec = timevalToLongDouble(start_count_);
+    long double end_time_in_micro_sec = timevalToLongDouble(end_count);
+#endif
+
+    return end_time_in_micro_sec - start_time_in_micro_sec;
+}
+
+long double Timer::getElapsedTimeInMilliSec() const
+{
+    return this->getElapsedTimeInMicroSec() * 0.001;
+}
+
+long double Timer::getElapsedTimeInSec() const
+{
+    return this->getElapsedTimeInMicroSec() * 0.000001;
+}
+
+long double Timer::getElapsedTime() const
+{
+    return this->getElapsedTimeInSec();
+}
+
+void Timer::printLastElapsedTime(const std::string& m) const
+{
+    std::cout << m << " (sec): " << getElapsedTimeInSec() << std::endl;
+}
+
+void Timer::printLastElapsedTimeMSec(const std::string& m) const
+{
+    std::cout << m << " (msec): " << getElapsedTimeInMilliSec() << std::endl;
+}
+
+long double Timer::nowMicroSec()
+{
+#ifdef WIN32
+    LARGE_INTEGER nowCount;
+    QueryPerformanceCounter(&nowCount);
+    return timeCountsToLongDouble(nowCount);
+#else
+    timeval now_count{};
+    gettimeofday(&now_count, nullptr);
+    return timevalToLongDouble(now_count);
+#endif
+}
+
+long double Timer::nowMilliSec()
+{
+    return Timer::nowMicroSec() * 0.001;
+}
+
+long double Timer::now()
+{
+    return Timer::nowMicroSec() * 0.000001;
+}
+
+} // namespace tue
