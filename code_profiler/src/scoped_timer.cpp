@@ -1,6 +1,8 @@
 #include "tue/profiling/scoped_timer.h"
 #include "tue/profiling/profiler.h"
 
+#include <string>
+
 namespace tue
 {
 

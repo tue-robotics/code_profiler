@@ -14,7 +14,10 @@
 
 #include "profiling/Timer.h"
 
+#include <chrono>
 #include <iostream>
+#include <ratio>
+#include <string>
 
 ///////////////////////////////////////////////////////////////////////////////
 // constructor
@@ -89,20 +92,20 @@ double Timer::getElapsedTime() const
 // TUe
 void Timer::printLastElapsedTime(const std::string& m) const
 {
-    std::cout << m << " (sec): " << getElapsedTimeInSec() << std::endl;
+    std::cout << m << " (sec): " << getElapsedTimeInSec() << '\n';
 }
 
 void Timer::printLastElapsedTimeInMilliSec(const std::string& m) const
 {
-    std::cout << m << " (msec): " << getElapsedTimeInMilliSec() << std::endl;
+    std::cout << m << " (msec): " << getElapsedTimeInMilliSec() << '\n';
 }
 
 void Timer::printLastElapsedTimeInMicroSec(const std::string& m) const
 {
-    std::cout << m << " (μsec): " << getElapsedTimeInMicroSec() << std::endl;
+    std::cout << m << " (μsec): " << getElapsedTimeInMicroSec() << '\n';
 }
 
 void Timer::printLastElapsedTimeInNanoSec(const std::string& m) const
 {
-    std::cout << m << " (nsec): " << getElapsedTimeInNanoSec() << std::endl;
+    std::cout << m << " (nsec): " << getElapsedTimeInNanoSec() << '\n';
 }

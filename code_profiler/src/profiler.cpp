@@ -1,6 +1,7 @@
 #include "tue/profiling/profiler.h"
 
 #include <iostream>
+#include <string>
 #include <utility>
 
 namespace tue
@@ -60,7 +61,7 @@ void Profiler::stopTimer()
 {
     if (!head_)
     {
-        std::cout << "[tue::Profiler] stopTimer() called, but no timer is active." << std::endl;
+        std::cout << "[tue::Profiler] stopTimer() called, but no timer is active." << '\n';
         return;
     }
 
@@ -70,15 +71,16 @@ void Profiler::stopTimer()
 
 // ----------------------------------------------------------------------------------------------------
 
+// NOLINTNEXTLINE(misc-no-recursion)
 void Profiler::addToStream(std::ostream& out, const std::string& prefix) const
 {
     if (!parent_)
     {
-        out << prefix << "[" << name_ << "]" << std::endl;
+        out << prefix << "[" << name_ << "]" << '\n';
     }
     else
     {
-        out << prefix << name_ << ": " << timer_.getElapsedTimeInMilliSec() << " ms" << std::endl;
+        out << prefix << name_ << ": " << timer_.getElapsedTimeInMilliSec() << " ms" << '\n';
     }
 
     for (const auto& it : children_)

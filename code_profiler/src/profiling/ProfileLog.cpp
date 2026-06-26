@@ -2,6 +2,12 @@
 #include "profiling/Profiler.h"
 
 #include <iomanip>
+#include <ios>
+#include <iostream>
+#include <map>
+#include <ostream>
+#include <string>
+#include <vector>
 
 void ProfileLog::PrintLog(std::ostream& stream,
                           std::vector<std::map<std::string, Statistics>*>& stats,
@@ -12,24 +18,24 @@ void ProfileLog::PrintLog(std::ostream& stream,
     {
         stream << std::fixed;
         stream << std::left;
-        stream << "Thread info for thread " << ++thread_num << ":" << std::endl;
+        stream << "Thread info for thread " << ++thread_num << ":" << '\n';
 
         stream << std::setw(15) << "Name:" << std::setw(20) << "Total Time:" << std::setw(30) << "Average time"
-               << std::setw(30) << "Relative Time:" << std::setw(15) << "Called #:" << std::endl;
-        stream << std::setfill('-') << std::setw(100) << "" << std::endl;
+               << std::setw(30) << "Relative Time:" << std::setw(15) << "Called #:" << '\n';
+        stream << std::setfill('-') << std::setw(100) << "" << '\n';
         stream << std::setfill(' ');
 
         for (auto& it2 : *stat)
         {
-            Statistics stats = it2.second;
+            const Statistics stats = it2.second;
             if (!stats.running)
                 stream << std::setw(15) << it2.first << std::setw(20) << stats.msec << std::setw(30)
                        << (stats.msec / stats.callAmount) << std::setw(30) << stats.msec / totalTime << std::setw(30)
-                       << stats.callAmount << std::endl;
+                       << stats.callAmount << '\n';
             else
-                stream << std::setw(15) << it2.first << "ERROR(" << it2.first << ") was never stopped!" << std::endl;
+                stream << std::setw(15) << it2.first << "ERROR(" << it2.first << ") was never stopped!" << '\n';
         }
-        std::cout << std::endl;
+        std::cout << '\n';
     }
 }
 
