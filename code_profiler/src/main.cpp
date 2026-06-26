@@ -4,7 +4,8 @@
 #include <iostream>
 #include <thread>
 
-Timer t;
+namespace
+{
 int testProf()
 { /*
      ThreadProfiler::Start("ProfileThis");
@@ -13,14 +14,16 @@ int testProf()
      sleep(2);
      ThreadProfiler::Stop("ProfileThis2");
      ThreadProfiler::Stop("ProfileThis");*/
+    Timer t;
     t.start();
     ThreadProfiler::Start("Bla");
     ThreadProfiler::Stop("Bla");
     t.stop();
-    std::cout << "Elapsed: " << t.getElapsedTimeInMilliSec() << std::endl;
+    std::cout << "Elapsed: " << t.getElapsedTimeInMilliSec() << '\n';
     return 0;
 }
 
+[[maybe_unused]]
 void testProf2()
 {
     std::thread t1(&testProf);
@@ -28,6 +31,7 @@ void testProf2()
     std::thread t2(&testProf);
     t2.join();
 }
+} // namespace
 
 int main()
 {

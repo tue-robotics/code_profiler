@@ -1,8 +1,9 @@
 #include "profiling/StatsPublisher.h"
 
-#include <code_profiler_interfaces/msg/statistics.hpp>
+#include <code_profiler_interfaces/msg/statistics.hpp> // IWYU pragma: keep
 #include <iostream>
-#include <rclcpp/rclcpp.hpp>
+#include <rclcpp/node.hpp>
+#include <rclcpp/rclcpp.hpp> // IWYU pragma: keep
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -14,11 +15,12 @@ void StatsPublisher::initialize(rclcpp::Node* node)
 {
     if (!node)
     {
-        std::cerr << "code_profiler: StatsPublisher::initialize() - Node is a nullptr." << std::endl;
+        std::cerr << "code_profiler: StatsPublisher::initialize() - Node is a nullptr." << '\n';
         return;
     }
 
     node_ = node;
+    // NOLINTNEXTLINE(misc-include-cleaner) - Statistics is provided by the generated <...statistics.hpp> kept above
     pub_stats_ = node_->create_publisher<code_profiler_interfaces::msg::Statistics>("profiler_stats", 1);
 }
 
@@ -27,7 +29,7 @@ void StatsPublisher::initialize(rclcpp::Node* node)
 void StatsPublisher::startTimer(const std::string& label)
 {
     timers_[label].start();
-    stack_.push(ScopeStat(label));
+    stack_.emplace(label);
 }
 
 // ----------------------------------------------------------------------------------------------------
@@ -37,7 +39,7 @@ void StatsPublisher::stopTimer(const std::string& label)
     auto it = timers_.find(label);
     if (it == timers_.end())
     {
-        std::cout << "code_profiler: no timer found for label '" << label << "'." << std::endl;
+        std::cout << "code_profiler: no timer found for label '" << label << "'." << '\n';
     }
     else
     {
@@ -51,7 +53,7 @@ void StatsPublisher::stopTimer(const std::string& label)
     }
     else
     {
-        std::cout << "code_profiler: stopTimer() called, but no timer is active." << std::endl;
+        std::cout << "code_profiler: stopTimer() called, but no timer is active." << '\n';
     }
 }
 
@@ -61,7 +63,7 @@ void StatsPublisher::publish() const
 {
     if (!pub_stats_)
     {
-        std::cout << "code_profiler: StatsPublisher not initialized." << std::endl;
+        std::cout << "code_profiler: StatsPublisher not initialized." << '\n';
         return;
     }
 

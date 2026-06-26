@@ -18,9 +18,9 @@ void LoopTimer::start()
 void LoopTimer::stop()
 {
     timer_.stop();
-    long double time = timer_.getElapsedTime();
-    long double y = time - c_;
-    long double x = sum_ + y;
+    const long double time = timer_.getElapsedTime();
+    const long double y = time - c_;
+    const long double x = sum_ + y;
     c_ = (x - sum_) - y;
     sum_ = x;
 }
@@ -61,7 +61,7 @@ long double LoopTimer::getAverageLoopTime()
 long double LoopTimer::getAverageLoopTime() const
 {
     if (timer_.running())
-        return sum_ / std::max<int>(counts_ - 1, 1);
+        return sum_ / (counts_ > 1 ? counts_ - 1 : 1);
 
     return sum_ / counts_;
 }

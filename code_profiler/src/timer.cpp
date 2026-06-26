@@ -15,6 +15,9 @@
 #include "tue/profiling/timer.h"
 
 #include <cstdlib>
+#include <iostream>
+#include <string>
+#include <sys/time.h>
 
 namespace tue
 {
@@ -25,10 +28,14 @@ inline long double timeCountsToLongDouble(const LARGE_INTEGER& counts, const LAR
     return counts.QuadPart * (1000000.0 / frequency.QuadPart);
 }
 #else
-inline long double timevalToLongDouble(const timeval& time)
+namespace
 {
-    return (time.tv_sec * 1000000.0) + time.tv_usec;
+// NOLINTNEXTLINE(misc-include-cleaner) - timeval is provided by the POSIX <sys/time.h> included above
+long double timevalToLongDouble(const timeval& time)
+{
+    return (static_cast<long double>(time.tv_sec) * 1000000.0) + static_cast<long double>(time.tv_usec);
 }
+} // namespace
 #endif
 
 // ----------------------------------------------------------------------------------------------------
@@ -84,8 +91,8 @@ long double Timer::getElapsedTimeInMicroSec() const
     else
         gettimeofday(&end_count, nullptr);
 
-    long double start_time_in_micro_sec = timevalToLongDouble(start_count_);
-    long double end_time_in_micro_sec = timevalToLongDouble(end_count);
+    const long double start_time_in_micro_sec = timevalToLongDouble(start_count_);
+    const long double end_time_in_micro_sec = timevalToLongDouble(end_count);
 #endif
 
     return end_time_in_micro_sec - start_time_in_micro_sec;
@@ -108,12 +115,12 @@ long double Timer::getElapsedTime() const
 
 void Timer::printLastElapsedTime(const std::string& m) const
 {
-    std::cout << m << " (sec): " << getElapsedTimeInSec() << std::endl;
+    std::cout << m << " (sec): " << getElapsedTimeInSec() << '\n';
 }
 
 void Timer::printLastElapsedTimeMSec(const std::string& m) const
 {
-    std::cout << m << " (msec): " << getElapsedTimeInMilliSec() << std::endl;
+    std::cout << m << " (msec): " << getElapsedTimeInMilliSec() << '\n';
 }
 
 long double Timer::nowMicroSec()
