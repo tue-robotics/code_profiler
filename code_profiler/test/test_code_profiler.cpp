@@ -63,6 +63,21 @@ TEST(Timer, RunningTimerKeepsCounting)
     EXPECT_GE(timer.getElapsedDuration() - first, SLEEP);
 }
 
+TEST(Timer, ElapsedDurationUntilTimePoint)
+{
+    tue::Timer timer;
+    timer.start();
+    const auto now = tue::Timer::Clock::now();
+    const auto first = timer.getElapsedDuration(now);
+    // Exact: the elapsed time grows with the given time point only
+    EXPECT_EQ(timer.getElapsedDuration(now + SLEEP) - first, SLEEP);
+
+    timer.stop();
+    // Stopped, so the time point is not used
+    const auto elapsed = timer.getElapsedDuration();
+    EXPECT_EQ(timer.getElapsedDuration(tue::Timer::Clock::now() + SLEEP), elapsed);
+}
+
 TEST(Timer, UnitConversionsAreCorrectlyRounded)
 {
     tue::Timer timer;
@@ -143,6 +158,91 @@ TEST(LoopTimer, ConstGettersExcludeCurrentIteration)
     const long double total = const_timer.getTotalLoopTime();
     EXPECT_EQ(const_timer.getAverageLoopTime(), total);
     EXPECT_LT(const_timer.getLoopUsagePercentage(), 1.0);
+}
+
+TEST(LoopTimer, TotalLoopDurationIncludesRunningIteration)
+{
+    tue::LoopTimer timer;
+    timer.start();
+    sleep();
+    timer.stop();
+    const auto completed = timer.getTotalLoopDuration(tue::Timer::Clock::now());
+    EXPECT_GE(completed, SLEEP);
+    EXPECT_EQ(std::chrono::duration<long double>(completed).count(), std::as_const(timer).getTotalLoopTime());
+
+    timer.start();
+    const auto now = tue::Timer::Clock::now();
+    const auto running = timer.getTotalLoopDuration(now);
+    EXPECT_GE(running, completed);
+    // Exact: while running, the loop time grows with the given time point only
+    EXPECT_EQ(timer.getTotalLoopDuration(now + SLEEP) - running, SLEEP);
+    // Not stopped by the const getter
+    EXPECT_EQ(std::as_const(timer).getTotalLoopTime(), std::chrono::duration<long double>(completed).count());
+}
+
+TEST(LoopTimer, LoopTimeDuringIntervalIsBoundedByInterval)
+{
+    // B(t) = getTotalLoopDuration(t) never decreases and grows at most as fast as t, so the loop time in any interval
+    // [t0, t1] is within [0, t1 - t0]. Sampled around every start and stop, including a start while running.
+    tue::LoopTimer timer;
+    auto prev_time = tue::Timer::Clock::now();
+    auto prev_loop = timer.getTotalLoopDuration(prev_time);
+    const auto check = [&]
+    {
+        const auto time = tue::Timer::Clock::now();
+        const auto loop = timer.getTotalLoopDuration(time);
+        EXPECT_GE(loop, prev_loop);
+        EXPECT_LE(loop - prev_loop, time - prev_time);
+        prev_time = time;
+        prev_loop = loop;
+    };
+
+    for (int i = 0; i < 100; ++i)
+    {
+        timer.start();
+        check();
+        timer.start(); // Ends the running iteration, so its time is kept
+        check();
+        timer.stop();
+        check();
+    }
+    EXPECT_EQ(timer.getIterationCount(), 200U);
+}
+
+TEST(LoopTimer, StartWhileRunningKeepsIterationTime)
+{
+    tue::LoopTimer timer;
+    timer.start();
+    sleep();
+    timer.start();
+    sleep();
+    timer.stop();
+    EXPECT_EQ(timer.getIterationCount(), 2U);
+    EXPECT_GE(timer.getTotalLoopDuration(tue::Timer::Clock::now()), 2 * SLEEP);
+}
+
+TEST(LoopTimer, LoopUsageAtTimePointIncludesRunningIteration)
+{
+    tue::LoopTimer timer;
+    const auto now = tue::Timer::Clock::now();
+    EXPECT_EQ(timer.getLoopUsagePercentage(now), 0.0);
+
+    timer.start();
+    sleep();
+    timer.stop();
+    sleep();
+    const double idle = timer.getLoopUsagePercentage(tue::Timer::Clock::now());
+    EXPECT_GT(idle, 0.0);
+    EXPECT_LT(idle, 1.0);
+
+    timer.start();
+    const auto start = tue::Timer::Clock::now();
+    // Running for an hour: nearly the whole time is used by the loop, but never more
+    const double busy = timer.getLoopUsagePercentage(start + std::chrono::hours(1));
+    EXPECT_GT(busy, 0.9999);
+    EXPECT_LE(busy, 1.0);
+    // The const overload without a time point excludes the running iteration
+    EXPECT_LT(std::as_const(timer).getLoopUsagePercentage(), busy);
 }
 
 TEST(LoopTimer, SumIsExact)

@@ -50,6 +50,14 @@ public:
     Clock::duration getElapsedDuration() const;
 
     /**
+     * @brief Get the exact elapsed time as an integer number of clock ticks. When running, the time until the given
+     * time point is used, so multiple timers can be read at the same instant.
+     * @param now Time point of Clock, not before the start of the timer
+     * @return elapsed time
+     */
+    Clock::duration getElapsedDuration(Clock::time_point now) const;
+
+    /**
      * @brief Alias of Timer::getElapsedTimeInSec
      * @return elapsed time in seconds
      */

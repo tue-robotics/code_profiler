@@ -33,6 +33,8 @@ LoopTimer::LoopTimer() : counts_(0), sum_(Timer::Clock::duration::zero()) {}
 
 void LoopTimer::start()
 {
+    // Restarting the running iteration would discard its time, which makes the total loop time decrease
+    this->stop();
     ++counts_;
     if (!total_timer_.running())
         total_timer_.start();
@@ -68,6 +70,11 @@ long double LoopTimer::getTotalLoopTime() const
     return toSec(sum_);
 }
 
+Timer::Clock::duration LoopTimer::getTotalLoopDuration(Timer::Clock::time_point now) const
+{
+    return timer_.running() ? sum_ + timer_.getElapsedDuration(now) : sum_;
+}
+
 long double LoopTimer::getAverageLoopTime()
 {
     this->stop();
@@ -93,6 +100,13 @@ double LoopTimer::getLoopUsagePercentage()
 double LoopTimer::getLoopUsagePercentage() const
 {
     return usage(sum_, total_timer_.getElapsedDuration());
+}
+
+double LoopTimer::getLoopUsagePercentage(Timer::Clock::time_point now) const
+{
+    // The iterations don't overlap and lie within the total time, so the loop time never exceeds it; as rounding is
+    // monotonic, the ratio is never above 1.
+    return usage(getTotalLoopDuration(now), total_timer_.getElapsedDuration(now));
 }
 
 } // namespace tue
