@@ -3,6 +3,7 @@
 
 #include "timer.h"
 #include <map>
+#include <memory>
 #include <string>
 
 namespace tue
@@ -16,7 +17,13 @@ public:
 
     Profiler(std::string name);
 
-    virtual ~Profiler();
+    virtual ~Profiler() = default;
+
+    // Children point to their parent, so a copied or moved profiler would leave them dangling
+    Profiler(const Profiler&) = delete;
+    Profiler(Profiler&&) = delete;
+    Profiler& operator=(const Profiler&) = delete;
+    Profiler& operator=(Profiler&&) = delete;
 
     void setName(const std::string& name) { name_ = name; }
 
@@ -37,7 +44,7 @@ protected:
 
     Timer timer_;
 
-    std::map<std::string, Profiler*> children_;
+    std::map<std::string, std::unique_ptr<Profiler>> children_;
 
     Profiler(std::string name, Profiler* parent);
 

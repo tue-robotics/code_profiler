@@ -10,8 +10,10 @@ This package has been fully migrated to ROS2. It provides profiling utilities th
 
 ## Key Components
 
+- **Timer**: Monotonic (`std::chrono::steady_clock`) nano-second timer, based on the
+  [High Resolution Timer](https://www.songho.ca/misc/timer/timer.html) of Song Ho Ahn (version 2024-04-17)
 - **Profiler**: Core profiling class for timing code sections
-- **LoopTimer**: Timer with Kahan summation for accurate loop timing
+- **LoopTimer**: Timer with exact integer summation of the loop times for accurate loop timing
 - **ProfilePublisher**: ROS2 publisher for profiling data (requires `rclcpp::Node*`)
 - **StatsPublisher**: ROS2 publisher for statistics messages (requires `rclcpp::Node*`)
 - **liveprofile**: Python script for live visualization of profiling data

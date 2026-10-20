@@ -4,20 +4,22 @@
 #include "profiling/ProfileLog.h"
 #include "Timer.h"
 
-#include <algorithm>
+#include <chrono>
 #include <map>
+#include <memory>
 #include <mutex>
 #include <string>
 #include <thread>
 #include <vector>
 
-static std::string LOGGING_LOCATION = "~/profile_logs";
+inline const std::string LOGGING_LOCATION = "~/profile_logs";
 
 struct Statistics
 {
     Timer timer;
-    double msec;
+    double msec; // derived from total, kept for backwards compatibility
     int callAmount;
+    Timer::Clock::duration total{}; // exact sum of all calls, free of accumulated rounding errors
 
     std::string parent;
     bool running;
@@ -72,27 +74,27 @@ public:
     ~ThreadProfilerManager();
 
 private:
-    static thread_local std::unique_ptr<ThreadProfiler> profiler;
+    static inline thread_local std::unique_ptr<ThreadProfiler> profiler = nullptr;
     std::mutex mutex;
     std::vector<FunctionStatsPtr> threadStats;
     Timer timer;
 };
 
-thread_local std::unique_ptr<ThreadProfiler> ThreadProfilerManager::profiler = nullptr;
-
-// Global threadProfiler
-static ThreadProfilerManager manager;
+// Global threadProfiler, a single instance for the whole program (instead of one per translation unit)
+inline ThreadProfilerManager manager;
 
 // Implementation of ThreadProfiler methods
 inline void ThreadProfiler::Start(const std::string& name)
 {
     ThreadProfiler& instance = manager.Profiler();
-    if (instance.stats->find(name) == instance.stats->end() && !instance.stats->find(name)->second.running)
+    // Single lookup; the parent is only recorded on the first call
+    auto mapIt = instance.stats->find(name);
+    if (mapIt == instance.stats->end())
     {
-        (*instance.stats)[name] = Statistics(instance.currentlyProfiling);
+        mapIt = instance.stats->emplace(name, Statistics(instance.currentlyProfiling)).first;
     }
-    (*instance.stats)[name].timer.start();
-    (*instance.stats)[name].running = true;
+    mapIt->second.running = true;
+    mapIt->second.timer.start();
     instance.currentlyProfiling = name;
 }
 
@@ -104,9 +106,12 @@ inline void ThreadProfiler::Stop(const std::string& name)
     if (mapIt == instance.stats->end())
         return;
 
-    mapIt->second.msec += mapIt->second.timer.getElapsedTimeInMilliSec();
+    mapIt->second.timer.stop();
+    mapIt->second.total += mapIt->second.timer.getElapsedDuration();
+    mapIt->second.msec = std::chrono::duration<double, std::milli>(mapIt->second.total).count();
     mapIt->second.callAmount++;
     mapIt->second.running = false;
+    instance.currentlyProfiling = mapIt->second.parent;
 }
 
 inline FunctionStatsPtr ThreadProfiler::ReturnCurrentStatistics()
@@ -114,19 +119,6 @@ inline FunctionStatsPtr ThreadProfiler::ReturnCurrentStatistics()
     ThreadProfiler& instance = manager.Profiler();
     return instance.stats;
 }
-
-namespace
-{
-template <typename T> void deleteElement(T t)
-{
-    delete t;
-}
-
-template <typename _Element, typename T> void deleteAll(T& t)
-{
-    std::for_each(t.begin(), t.end(), deleteElement<_Element>);
-}
-} // namespace
 
 inline ThreadProfiler::~ThreadProfiler() {}
 
@@ -139,7 +131,8 @@ inline ThreadProfilerManager::~ThreadProfilerManager()
 {
     timer.stop();
     ProfileLog::PrintLog(threadStats, timer.getElapsedTimeInMilliSec());
-    deleteAll<FunctionStatsPtr>(threadStats);
+    for (FunctionStatsPtr stats : threadStats)
+        delete stats;
 }
 
 #endif

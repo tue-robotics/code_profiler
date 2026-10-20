@@ -3,7 +3,7 @@
 import sys
 import rclpy
 from rclpy.node import Node
-from code_profiler.msg import Statistics
+from code_profiler_interfaces.msg import Statistics
 
 import numpy
 
@@ -37,16 +37,16 @@ class LiveProfile(Node):
             self.report(self.agg)
             self.start_agg = now
             self.agg = {}
-        else:
-            for l, t in zip(data.labels, data.time_secs):
-                if l not in self.agg:
-                    self.agg[l] = []
-                self.agg[l].append(t)
+
+        # Also aggregate the message that closed the previous window, instead of dropping it
+        for label, t in zip(data.labels, data.time_secs):
+            self.agg.setdefault(label, []).append(t)
 
     def report(self, data):
         for k, v in sorted(data.items()):
-            mean = "{0:.3f} ms".format(numpy.mean(v, axis=0)*1000)
-            std  = "{0:.3f} ms".format(numpy.std(v, axis=0)*1000)
+            samples = numpy.asarray(v, dtype=numpy.float64) * 1000
+            mean = "{0:.3f} ms".format(samples.mean())
+            std = "{0:.3f} ms".format(samples.std())
             print(f'{k:<55}\tmean={mean}\tstd={std}\t({len(v)} samples)')
 
 

@@ -41,7 +41,8 @@ protected:
 
     std::map<std::string, Timer> timers_;
 
-    std::stack<ScopeStat> stack_;
+    // Only the labels; timing is done by timers_
+    std::stack<std::string> stack_;
 
     rclcpp::Node* node_;
 };

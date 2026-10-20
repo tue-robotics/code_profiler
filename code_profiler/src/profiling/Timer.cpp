@@ -22,7 +22,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // constructor
 ///////////////////////////////////////////////////////////////////////////////
-Timer::Timer() : startPoint(std::chrono::high_resolution_clock::now()), endPoint(startPoint), stopped(false) {}
+Timer::Timer() : startPoint(Clock::now()), endPoint(startPoint), stopped(false) {}
 
 ///////////////////////////////////////////////////////////////////////////////
 // start timer.
@@ -31,7 +31,7 @@ Timer::Timer() : startPoint(std::chrono::high_resolution_clock::now()), endPoint
 void Timer::start()
 {
     stopped = false; // reset stop flag
-    startPoint = std::chrono::high_resolution_clock::now();
+    startPoint = Clock::now(); // TUe: last, so the overhead of this function is not measured
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -40,45 +40,51 @@ void Timer::start()
 ///////////////////////////////////////////////////////////////////////////////
 void Timer::stop()
 {
+    endPoint = Clock::now(); // TUe: first, so the overhead of this function is not measured
     stopped = true; // set timer stopped flag
-    endPoint = std::chrono::high_resolution_clock::now();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// compute elapsed time in nano-second resolution.
-// other getElapsedTime will call this first, then convert to correspond resolution
+// TUe: compute the exact elapsed time as integer clock ticks.
+// other getElapsedTime will call this first, then convert to correspond resolution.
+// A local end point is used, so this const function is free of side effects and data races.
+///////////////////////////////////////////////////////////////////////////////
+Timer::Clock::duration Timer::getElapsedDuration() const
+{
+    return (stopped ? endPoint : Clock::now()) - startPoint;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// time interval (nanosec) as double
 ///////////////////////////////////////////////////////////////////////////////
 double Timer::getElapsedTimeInNanoSec() const
 {
-    if (!stopped)
-        endPoint = std::chrono::high_resolution_clock::now();
-
-    // time interval (nanosec) as double
-    return std::chrono::duration<double, std::nano>{endPoint - startPoint}.count();
+    return std::chrono::duration<double, std::nano>{this->getElapsedDuration()}.count();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// divide elapsedTimeInNanoSec by 1000
+// TUe: convert the integer ticks directly, a single correctly rounded division,
+// instead of multiplying the nano-seconds by an inexact constant (0.001)
 ///////////////////////////////////////////////////////////////////////////////
 double Timer::getElapsedTimeInMicroSec() const
 {
-    return this->getElapsedTimeInNanoSec() * 0.001;
+    return std::chrono::duration<double, std::micro>{this->getElapsedDuration()}.count();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// divide elapsedTimeInNanoSec by 1000000
+// TUe: see getElapsedTimeInMicroSec
 ///////////////////////////////////////////////////////////////////////////////
 double Timer::getElapsedTimeInMilliSec() const
 {
-    return this->getElapsedTimeInNanoSec() * 0.000001;
+    return std::chrono::duration<double, std::milli>{this->getElapsedDuration()}.count();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// divide elapsedTimeInNanoSec by 1000000000
+// TUe: see getElapsedTimeInMicroSec
 ///////////////////////////////////////////////////////////////////////////////
 double Timer::getElapsedTimeInSec() const
 {
-    return this->getElapsedTimeInNanoSec() * 0.000000001;
+    return std::chrono::duration<double>{this->getElapsedDuration()}.count();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

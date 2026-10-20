@@ -48,7 +48,6 @@ void StatsPublisher::stopTimer(const std::string& label)
 
     if (!stack_.empty())
     {
-        stack_.top().timer.stop();
         stack_.pop();
     }
     else
