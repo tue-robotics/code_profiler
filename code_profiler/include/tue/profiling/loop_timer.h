@@ -28,6 +28,9 @@ public:
     LoopTimer();
     ~LoopTimer() = default;
 
+    /**
+     * @brief Start a new iteration. A running iteration is stopped first, so its time is still counted.
+     */
     void start();
 
     /**
@@ -57,6 +60,18 @@ public:
     ///@}
 
     /**
+     * @brief Get the exact total time of the loop iterations until the given time point, including the running
+     * iteration until then. Changes nothing.
+     *
+     * As a function of the time point, this never decreases and grows at most as fast as the time point. So the loop
+     * time during an interval [t0, t1], getTotalLoopDuration(t1) - getTotalLoopDuration(t0), is within [0, t1 - t0],
+     * also when an iteration only partly overlaps the interval.
+     * @param now Time point of Timer::Clock, not before the last call to start() or stop()
+     * @return Total loop time as an integer number of clock ticks
+     */
+    Timer::Clock::duration getTotalLoopDuration(Timer::Clock::time_point now) const;
+
+    /**
      * @brief Get average time per loop iteration. Stops the current iteration when running.
      * @return Average time per loop iteration in seconds, 0 when no iteration has completed
      */
@@ -81,6 +96,14 @@ public:
     /// const version which excludes the current loop iteration when running
     double getLoopUsagePercentage() const;
     ///@}
+
+    /**
+     * @brief Get average percentage of total time used by the loop until the given time point, including the running
+     * iteration until then. Changes nothing.
+     * @param now Time point of Timer::Clock, not before the last call to start() or stop()
+     * @return Percentage in range [0-1], 0 when the timer has not been started
+     */
+    double getLoopUsagePercentage(Timer::Clock::time_point now) const;
 };
 
 } // namespace tue

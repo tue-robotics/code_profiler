@@ -62,6 +62,11 @@ Timer::Clock::duration Timer::getElapsedDuration() const
     return (running_ ? Clock::now() : end_point_) - start_point_;
 }
 
+Timer::Clock::duration Timer::getElapsedDuration(Clock::time_point now) const
+{
+    return (running_ ? now : end_point_) - start_point_;
+}
+
 long double Timer::getElapsedTimeInNanoSec() const
 {
     return toLongDouble<std::nano>(getElapsedDuration());
