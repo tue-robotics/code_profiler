@@ -1,7 +1,7 @@
 #ifndef TUE_PROFILING_LOOP_TIMER_H_
 #define TUE_PROFILING_LOOP_TIMER_H_
 
-#include <iostream>
+#include <iostream> // IWYU pragma: export - kept for backwards compatibility of code relying on it
 #include <tue/profiling/timer.h>
 
 namespace tue
@@ -19,20 +19,20 @@ private:
     long unsigned int counts_;
 
     /**
-     * @brief Sum so far
+     * @brief Sum so far. Integer clock ticks, so the summation is exact and needs no (Kahan) error compensation.
+     * Overflows only after 292 years with a nano-second clock.
      */
-    long double sum_;
-
-    /**
-     * @brief Compensation for lost low-order bits
-     */
-    long double c_;
+    Timer::Clock::duration sum_;
 
 public:
     LoopTimer();
     ~LoopTimer() = default;
 
     void start();
+
+    /**
+     * @brief Stop the current iteration. Does nothing when no iteration is running, so it never counts time twice.
+     */
     void stop();
 
     /**
@@ -58,7 +58,7 @@ public:
 
     /**
      * @brief Get average time per loop iteration. Stops the current iteration when running.
-     * @return Average time per loop iteration in seconds
+     * @return Average time per loop iteration in seconds, 0 when no iteration has completed
      */
     ///@{
     long double getAverageLoopTime();
@@ -67,14 +67,14 @@ public:
     ///@}
 
     /**
-     * @brief Get the total elapsed time since the first start.Stops the current iteration when running.
+     * @brief Get the total elapsed time since the first start.
      * @return Total time since start in seconds
      */
     long double getTotalTime() const;
 
     /**
-     * @brief Get average percentage of total time used by the loop
-     * @return Percentage in range [0-1]
+     * @brief Get average percentage of total time used by the loop. Stops the current iteration when running.
+     * @return Percentage in range [0-1], 0 when the timer has not been started
      */
     ///@{
     double getLoopUsagePercentage();

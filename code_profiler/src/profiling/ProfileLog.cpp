@@ -25,17 +25,17 @@ void ProfileLog::PrintLog(std::ostream& stream,
         stream << std::setfill('-') << std::setw(100) << "" << '\n';
         stream << std::setfill(' ');
 
-        for (auto& it2 : *stat)
+        for (const auto& it2 : *stat)
         {
-            const Statistics stats = it2.second;
-            if (!stats.running)
-                stream << std::setw(15) << it2.first << std::setw(20) << stats.msec << std::setw(30)
-                       << (stats.msec / stats.callAmount) << std::setw(30) << stats.msec / totalTime << std::setw(30)
-                       << stats.callAmount << '\n';
+            const Statistics& function_stats = it2.second;
+            if (!function_stats.running)
+                stream << std::setw(15) << it2.first << std::setw(20) << function_stats.msec << std::setw(30)
+                       << (function_stats.msec / function_stats.callAmount) << std::setw(30)
+                       << function_stats.msec / totalTime << std::setw(15) << function_stats.callAmount << '\n';
             else
                 stream << std::setw(15) << it2.first << "ERROR(" << it2.first << ") was never stopped!" << '\n';
         }
-        std::cout << '\n';
+        stream << '\n';
     }
 }
 

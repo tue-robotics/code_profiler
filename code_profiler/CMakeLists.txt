@@ -85,6 +85,10 @@ ament_export_dependencies(code_profiler_interfaces rclcpp std_msgs)
 
 # 6. Testing and Linting
 if(BUILD_TESTING)
+  find_package(ament_cmake_gtest REQUIRED)
+  ament_add_gtest(test_code_profiler test/test_code_profiler.cpp)
+  target_link_libraries(test_code_profiler ${PROJECT_NAME})
+
   find_package(tue_lint_config REQUIRED)
   find_package(ament_cmake_clang_format REQUIRED)
   find_package(ament_cmake_clang_tidy REQUIRED)

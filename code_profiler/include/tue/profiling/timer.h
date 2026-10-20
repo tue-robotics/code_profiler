@@ -3,11 +3,11 @@
 // =======
 // High Resolution Timer.
 // This timer is able to measure the elapsed time with 1 micro-second accuracy
-// in both Windows, Linux and Unix system
+// using chrono STL (C++11) in both Windows, Linux and Unix system
 //
 //  AUTHOR: Song Ho Ahn (song.ahn@gmail.com)
 // CREATED: 2003-01-13
-// UPDATED: 2006-01-13
+// UPDATED: 2024-04-17
 //
 // Copyright (c) 2003 Song Ho Ahn
 //////////////////////////////////////////////////////////////////////////////
@@ -15,13 +15,8 @@
 #ifndef TUE_PROFILING_TIMER_H_
 #define TUE_PROFILING_TIMER_H_
 
-#ifdef WIN32 // Windows system specific
-#include <windows.h>
-#else // Unix based system specific
-#include <sys/time.h>
-#endif
-
-#include <iostream>
+#include <chrono>
+#include <iostream> // IWYU pragma: export - kept for backwards compatibility of code relying on it
 #include <string>
 
 namespace tue
@@ -30,6 +25,12 @@ namespace tue
 class Timer
 {
 public:
+    /**
+     * @brief Clock used for measuring intervals. Monotonic, unlike std::chrono::high_resolution_clock, which is an
+     * alias of the adjustable std::chrono::system_clock in libstdc++.
+     */
+    using Clock = std::chrono::steady_clock;
+
     Timer();
     ~Timer() = default;
 
@@ -41,6 +42,12 @@ public:
      * @return running or not running
      */
     inline bool running() const { return running_; }
+
+    /**
+     * @brief Get the exact elapsed time as an integer number of clock ticks. When running, the time until now is used.
+     * @return elapsed time
+     */
+    Clock::duration getElapsedDuration() const;
 
     /**
      * @brief Alias of Timer::getElapsedTimeInSec
@@ -66,8 +73,17 @@ public:
      */
     long double getElapsedTimeInMicroSec() const;
 
+    /**
+     * @brief Get elasped time in nano-seconds
+     * @return elapsed time in nano-seconds
+     */
+    long double getElapsedTimeInNanoSec() const;
+
     void printLastElapsedTime(const std::string&) const;
     void printLastElapsedTimeMSec(const std::string&) const;
+    void printLastElapsedTimeInMilliSec(const std::string&) const;
+    void printLastElapsedTimeInMicroSec(const std::string&) const;
+    void printLastElapsedTimeInNanoSec(const std::string&) const;
 
     /**
      * @brief Get the current time in micro-seconds since epoch
@@ -89,36 +105,19 @@ public:
 
 private:
     /**
+     * @brief Start time point
+     */
+    Clock::time_point start_point_;
+
+    /**
+     * @brief End time point
+     */
+    Clock::time_point end_point_;
+
+    /**
      * @brief Running flag
      */
     bool running_;
-
-#ifdef WIN32
-    /**
-     * @brief ticks per second
-     */
-    LARGE_INTEGER frequency_;
-
-    /**
-     * @brief startCount
-     */
-    LARGE_INTEGER startCount_;
-
-    /**
-     * @brief endCount
-     */
-    LARGE_INTEGER endCount_;
-#else
-    /**
-     * @brief Start counter
-     */
-    timeval start_count_{};
-
-    /**
-     * @brief End counter
-     */
-    timeval end_count_{};
-#endif
 };
 
 } // namespace tue

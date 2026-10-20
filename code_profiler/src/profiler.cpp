@@ -1,6 +1,7 @@
 #include "tue/profiling/profiler.h"
 
 #include <iostream>
+#include <memory>
 #include <string>
 #include <utility>
 
@@ -21,16 +22,6 @@ Profiler::Profiler(std::string name, Profiler* parent) : name_(std::move(name)),
 
 // ----------------------------------------------------------------------------------------------------
 
-Profiler::~Profiler()
-{
-    for (auto& it : children_)
-    {
-        delete it.second;
-    }
-}
-
-// ----------------------------------------------------------------------------------------------------
-
 void Profiler::startTimer(const std::string& name)
 {
     if (!head_)
@@ -38,28 +29,24 @@ void Profiler::startTimer(const std::string& name)
         head_ = this;
     }
 
-    Profiler* child = nullptr;
-    auto it_child = head_->children_.find(name);
-    if (it_child != head_->children_.end())
+    // Single lookup; the child is only constructed when the label is new
+    auto [it_child, inserted] = head_->children_.try_emplace(name);
+    if (inserted)
     {
-        child = it_child->second;
-    }
-    else
-    {
-        child = new Profiler(name, head_);
-        head_->children_[name] = child;
+        // std::make_unique can't access the protected constructor
+        it_child->second.reset(new Profiler(name, head_));
     }
 
-    head_ = child;
+    head_ = it_child->second.get();
 
-    child->timer_.start();
+    head_->timer_.start();
 }
 
 // ----------------------------------------------------------------------------------------------------
 
 void Profiler::stopTimer()
 {
-    if (!head_)
+    if (!head_ || head_ == this)
     {
         std::cout << "[tue::Profiler] stopTimer() called, but no timer is active." << '\n';
         return;

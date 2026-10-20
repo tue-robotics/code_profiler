@@ -21,11 +21,15 @@
 class Timer
 {
 public:
+    // TUe: monotonic clock; std::chrono::high_resolution_clock is the adjustable system_clock in libstdc++
+    using Clock = std::chrono::steady_clock;
+
     Timer();
     ~Timer() = default;
 
     void start(); // start timer
     void stop(); // stop the timer
+    Clock::duration getElapsedDuration() const; // TUe: get exact elapsed time in clock ticks
     double getElapsedTime() const; // get elapsed time in second
     double getElapsedTimeInSec() const; // get elapsed time in second (same as getElapsedTime)
     double getElapsedTimeInMilliSec() const; // get elapsed time in milli-second (10^-3)
@@ -38,8 +42,8 @@ public:
 
 protected:
 private:
-    std::chrono::high_resolution_clock::time_point startPoint;
-    mutable std::chrono::high_resolution_clock::time_point endPoint;
+    Clock::time_point startPoint;
+    Clock::time_point endPoint;
     bool stopped; // stop flag
 };
 
