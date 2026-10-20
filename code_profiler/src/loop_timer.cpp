@@ -50,8 +50,9 @@ void LoopTimer::stop()
 
 void LoopTimer::reset()
 {
-    total_timer_.stop();
-    timer_.stop();
+    // Fresh timers, so the elapsed times are zero too (a stopped timer keeps its last interval)
+    total_timer_ = Timer();
+    timer_ = Timer();
     counts_ = 0;
     sum_ = Timer::Clock::duration::zero();
 }

@@ -57,7 +57,8 @@ void Timer::stop()
 
 Timer::Clock::duration Timer::getElapsedDuration() const
 {
-    // Use a local end point when running, so this const function is free of side effects and data races.
+    // Use a local end point when running, so this const function has no side effects and concurrent const calls
+    // don't race. Like the rest of this class, it is not safe to call concurrently with start() or stop().
     return (running_ ? Clock::now() : end_point_) - start_point_;
 }
 

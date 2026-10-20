@@ -4,7 +4,9 @@
 #include "profiling/ProfileLog.h"
 #include "Timer.h"
 
+#include <algorithm>
 #include <chrono>
+#include <iterator>
 #include <map>
 #include <memory>
 #include <mutex>
@@ -52,6 +54,7 @@ public:
 private:
     std::thread::id threadId;
     std::string currentlyProfiling;
+    std::vector<std::string> activeScopes; // innermost last; currentlyProfiling is the innermost or empty
 };
 
 class ThreadProfilerManager
@@ -95,6 +98,7 @@ inline void ThreadProfiler::Start(const std::string& name)
     }
     mapIt->second.running = true;
     mapIt->second.timer.start();
+    instance.activeScopes.push_back(name);
     instance.currentlyProfiling = name;
 }
 
@@ -103,7 +107,8 @@ inline void ThreadProfiler::Stop(const std::string& name)
     ThreadProfiler& instance = manager.Profiler();
     FunctionStats::iterator mapIt = instance.stats->find(name);
 
-    if (mapIt == instance.stats->end())
+    // Ignore unknown and already stopped scopes, so an interval is never counted twice
+    if (mapIt == instance.stats->end() || !mapIt->second.running)
         return;
 
     mapIt->second.timer.stop();
@@ -111,7 +116,13 @@ inline void ThreadProfiler::Stop(const std::string& name)
     mapIt->second.msec = std::chrono::duration<double, std::milli>(mapIt->second.total).count();
     mapIt->second.callAmount++;
     mapIt->second.running = false;
-    instance.currentlyProfiling = mapIt->second.parent;
+
+    // Return to the enclosing active scope. The recorded parent can't be used: it is from the first call only, which
+    // may have come from another caller. Scopes may also be stopped out of order.
+    auto scopeIt = std::find(instance.activeScopes.rbegin(), instance.activeScopes.rend(), name);
+    if (scopeIt != instance.activeScopes.rend())
+        instance.activeScopes.erase(std::next(scopeIt).base());
+    instance.currentlyProfiling = instance.activeScopes.empty() ? "" : instance.activeScopes.back();
 }
 
 inline FunctionStatsPtr ThreadProfiler::ReturnCurrentStatistics()

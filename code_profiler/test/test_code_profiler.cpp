@@ -1,3 +1,4 @@
+#include <profiling/Profiler.h>
 #include <tue/profiling/loop_timer.h>
 #include <tue/profiling/profiler.h>
 #include <tue/profiling/scoped_timer.h>
@@ -170,6 +171,14 @@ TEST(LoopTimer, ResetClearsEverything)
     EXPECT_EQ(timer.getIterationCount(), 0U);
     EXPECT_EQ(timer.getTotalLoopTime(), 0.0L);
     EXPECT_EQ(timer.getAverageLoopTime(), 0.0L);
+    EXPECT_EQ(timer.getTotalTime(), 0.0L);
+}
+
+TEST(LoopTimer, ResetOfUnusedTimer)
+{
+    tue::LoopTimer timer;
+    timer.reset();
+    EXPECT_EQ(timer.getTotalTime(), 0.0L);
 }
 
 // ----------------------------------------------------------------------------------------------------
@@ -215,6 +224,55 @@ TEST(Profiler, UnbalancedStopIsHarmless)
     ss << profiler;
     EXPECT_NE(ss.str().find("\n  a: "), std::string::npos);
     EXPECT_NE(ss.str().find("\n  b: "), std::string::npos);
+}
+
+// ----------------------------------------------------------------------------------------------------
+
+TEST(ThreadProfiler, DuplicateStopIsIgnored)
+{
+    ThreadProfiler::Start("dup");
+    sleep();
+    ThreadProfiler::Stop("dup");
+    sleep();
+    ThreadProfiler::Stop("dup");
+
+    const Statistics& stats = ThreadProfiler::ReturnCurrentStatistics()->at("dup");
+    EXPECT_EQ(stats.callAmount, 1);
+    EXPECT_GE(stats.total, SLEEP);
+    EXPECT_LT(stats.total, 2 * SLEEP);
+}
+
+TEST(ThreadProfiler, ParentIsTheEnclosingActiveScope)
+{
+    // "f" is first called from "a", later from "b"; a new scope opened in "b" after "f" must get parent "b"
+    ThreadProfiler::Start("ctx_a");
+    ThreadProfiler::Start("ctx_f");
+    ThreadProfiler::Stop("ctx_f");
+    ThreadProfiler::Stop("ctx_a");
+
+    ThreadProfiler::Start("ctx_b");
+    ThreadProfiler::Start("ctx_f");
+    ThreadProfiler::Stop("ctx_f");
+    ThreadProfiler::Start("ctx_g");
+    ThreadProfiler::Stop("ctx_g");
+    ThreadProfiler::Stop("ctx_b");
+
+    const FunctionStatsPtr stats = ThreadProfiler::ReturnCurrentStatistics();
+    EXPECT_EQ(stats->at("ctx_f").parent, "ctx_a");
+    EXPECT_EQ(stats->at("ctx_g").parent, "ctx_b");
+    EXPECT_EQ(stats->at("ctx_b").parent, "");
+}
+
+TEST(ThreadProfiler, InterleavedStop)
+{
+    ThreadProfiler::Start("il_x");
+    ThreadProfiler::Start("il_y");
+    ThreadProfiler::Stop("il_x");
+    ThreadProfiler::Start("il_z"); // "il_y" is still active
+    ThreadProfiler::Stop("il_z");
+    ThreadProfiler::Stop("il_y");
+
+    EXPECT_EQ(ThreadProfiler::ReturnCurrentStatistics()->at("il_z").parent, "il_y");
 }
 
 } // namespace
